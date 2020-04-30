@@ -11,7 +11,7 @@ function MyFileChangePass() {
     const newUserPW = localStorage.getItem('user') || '[]'
     // console.log(JSON.parse(newUser))
     setUserPW(JSON.parse(newUserPW))
-  }, [userPW])
+  }, [])
 
   const handleSubmit = (event) => {
     const form = event.currentTarget

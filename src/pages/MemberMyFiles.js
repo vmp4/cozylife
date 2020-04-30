@@ -7,7 +7,7 @@ import MyFile from './MyFile'
 import MyFileChangePass from './MyFileChangePass'
 import { FaAngleLeft } from 'react-icons/fa'
 
-function MemberMyFile() {
+function MemberMyFiles() {
   const [key, setKey] = useState('mdd')
   return (
     <>
@@ -44,4 +44,4 @@ function MemberMyFile() {
   )
 }
 
-export default MemberMyFile
+export default MemberMyFiles

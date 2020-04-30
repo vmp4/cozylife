@@ -10,13 +10,17 @@ import {
   Link,
   Switch,
   NavLink,
+  withRouter,
 } from 'react-router-dom'
 import '../styles/custom.scss'
 import { Container, Row, Col } from 'react-bootstrap'
 import Spinner from 'react-bootstrap/Spinner'
 
-function Member() {
+function Member(props) {
   const [loading, setLoading] = useState(false)
+
+  const url = props.match.url
+  const path = props.match.path
 
   useEffect(() => {
     setLoading(true)
@@ -40,60 +44,59 @@ function Member() {
 
   const display = (
     <>
-      <Router>
-        <Container>
-          <Row>
-            <Col md="2">
-              <ul>
-                <li>
-                  <h4>
-                    <NavLink to="/Member" id="paddingbottom">
-                      會員中心
-                    </NavLink>
-                  </h4>
-                </li>
-                <br />
-                <li id="list1">
-                  <h5>
-                    <Link to="/Member/MemberMyFiles">個人資料</Link>
-                  </h5>
-                </li>
-                {/* <li id="list1">
-                  <h5>
-                    <Link to="/Member/MemberMyDiscount">我的優惠</Link>
-                  </h5>
-                </li>
-                <li id="list1">
-                  <h5>
-                    <Link to="/Member/MemberMyCollection">我的收藏</Link>
-                  </h5>
-                </li>
-                <li id="list1">
-                  <h5>
-                    <Link to="/Member/MemberInquire">訂單/問答/退貨查詢</Link>
-                  </h5>
-                </li> */}
-              </ul>
-            </Col>
-            <Col md="10">
-              <Switch>
-                <Route path="/Member/MemberMyFiles">
-                  <MemberMyFiles />
-                </Route>
-                <Route path="/Member/MemberMyCollection">
-                  <MemberMyCollection />
-                </Route>
-                <Route path="/Member/MemberMyDiscount">
-                  <MemberMyDiscount />
-                </Route>
-                <Route path="/Member/MemberInquire">
-                  <MemberInquire />
-                </Route>
+      <Container>
+        <Row>
+          <Col md="2">
+            <ul>
+              <li>
+                <h4>
+                  <NavLink to={url} id="paddingbottom">
+                    會員中心
+                  </NavLink>
+                </h4>
+              </li>
+              <br />
+              <li id="list1">
+                <h5>
+                  <Link to={`${url}/MemberMyFiles`}>個人資料</Link>
+                </h5>
+              </li>
+              <li id="list1">
+                <h5>
+                  <Link to={`${url}/MemberMyDiscount`}>我的優惠</Link>
+                </h5>
+              </li>
+              <li id="list1">
+                <h5>
+                  <Link to={`${url}/MemberMyCollection`}>我的收藏</Link>
+                </h5>
+              </li>
+              <li id="list1">
+                <h5>
+                  <Link to={`${url}/MemberInquire`}>訂單/問答/退貨查詢</Link>
+                </h5>
+              </li>
+            </ul>
+          </Col>
+          <Col md="10">
+            <Switch>
+              <Route path={`${path}/MemberMyFiles`}>
+                <MemberMyFiles />
+              </Route>
+              <Route path={`${path}/MemberMyDiscount`}>
+                <MemberMyDiscount />
+              </Route>
+              <Route path={`${path}/MemberMyCollection`}>
+                <MemberMyCollection />
+              </Route>
+              <Route path={`${path}/MemberInquire`}>
+                <MemberInquire />
+              </Route>
 
-                <Route path="/Member/*">
-                  <NotFoundPage />
-                </Route>
-                {/* <Route path="/Member/MemberMyFiles/*">
+              <Route path="/Member/*">
+                <NotFoundPage />
+              </Route>
+              {/* <Route path="/Member/MemberMyFiles/*">
                   <NotFoundPage />
                 </Route>
                 <Route path="/Member/MemberMyCollection/*">
@@ -105,15 +108,14 @@ function Member() {
                 <Route path="/Member/MemberInquire/*">
                   <NotFoundPage />
                 </Route> */}
-              </Switch>
-            </Col>
-          </Row>
-        </Container>
-      </Router>
+            </Switch>
+          </Col>
+        </Row>
+      </Container>
     </>
   )
 
   return <>{loading ? spinner : display}</>
 }
 
-export default Member
+export default withRouter(Member)
