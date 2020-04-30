@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Form from 'react-bootstrap/Form'
-import { Col, Button, Row } from 'react-bootstrap'
+import { Col, Button, Row, Container } from 'react-bootstrap'
 import Spinner from 'react-bootstrap/Spinner'
 import { BrowserRouter as Router } from 'react-router-dom'
 
@@ -240,7 +240,9 @@ function MyFile() {
 
   return (
     <>
-      <Router id="filetop">{loading ? spinner : display}</Router>
+      <Router>
+        <Container id="filetop">{loading ? spinner : display}</Container>
+      </Router>
     </>
   )
 }
