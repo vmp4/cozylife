@@ -1,0 +1,78 @@
+@import '/variables.scss';
+
+@import '~bootstrap/scss/bootstrap.scss';
+
+// Member list
+#loadmember {
+  margin-top: 100px;
+}
+
+ul {
+  margin-top: 70px;
+  font-family: sans-serif;
+  li {
+    list-style-type: square;
+  }
+
+  #list1 {
+    list-style-type: none;
+    display: inline;
+  }
+}
+
+// 外框
+.bordertop {
+  border-width: 0 1px 1px 0.1px;
+  border-bottom: rgba(97, 62, 34, 0.1) solid;
+  border-left: rgba(97, 62, 34, 0.1) solid;
+  border-right: rgba(97, 62, 34, 0.1) solid;
+}
+
+// File Page
+#filetabs {
+  margin-top: 70px;
+}
+
+#filetop {
+  padding: 38px 100px 100px 100px;
+}
+
+#loadfile {
+  margin: 100px;
+}
+
+#radiotop {
+  margin: 6px;
+}
+
+// Discount Pages
+#discounttabs {
+  margin-top: 70px;
+}
+
+#loaddiscount {
+  margin: 150px;
+}
+
+// Collection Pages
+#collectiontabs {
+  margin-top: 70px;
+}
+
+#loadcollection {
+  margin: 150px;
+}
+
+// Inquire Pages
+#inquiretop {
+  margin-top: 70px;
+}
+
+#loadinquire {
+  margin-top: 150px;
+}
+
+// Banner for NotFoundPage
+#bannerpage {
+  margin-top: 70px;
+}

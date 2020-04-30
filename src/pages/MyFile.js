@@ -11,10 +11,10 @@ function MyFile() {
 
   useEffect(() => {
     setLoading(true)
-    const newUser = localStorage.getItem('user') || []
+    const newUser = localStorage.getItem('user') || '[]'
     console.log(JSON.parse(newUser))
     setUser(JSON.parse(newUser))
-  }, [user])
+  }, [])
 
   useEffect(() => {
     setTimeout(() => {
