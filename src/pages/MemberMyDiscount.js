@@ -77,8 +77,16 @@ function MemberMyDiscount(props) {
   const pageNext =
     pageNow + 1 < discountPageTotal ? pageNow + 1 : discountPageTotal
 
+  // 過濾出快到期要呈現的資料
+  function dateFilter(discount) {
+    return function (x) {
+      return new Date(x.discountEndDate) - new Date() > 0 || !discount
+    }
+  }
+
   // 過濾出目前頁面要呈現的資料
-  const displayDiscount = discount.filter((item, index) => {
+  let discountFilter = discount.filter(dateFilter(discount))
+  const displayDiscount = discountFilter.filter((item, index) => {
     return index < pageNow * 6 && index >= (pageNow - 1) * 6
   })
 
@@ -174,46 +182,22 @@ function MemberMyDiscount(props) {
     </>
   )
 
-  // const dates = ["2018-09-12", "2018-10-18", "2018-12-30"];
-  // const filteredDates = dates.filter(d => new Date(d) - new Date() > 0);
-
-  // function isBigEnough(value) {
-  // return value >= 10;
-  // }
-
-  // var filtered = [12, 5, 8, 130, 44].filter(isBigEnough);
-  // // filtered is [12, 130, 44]
-
-  function dateFilter(discount) {
+  // 過濾出快到期要呈現的資料
+  function dateEndFilter(discount) {
     return function (x) {
       return (
-        (new Date(x.discountEndDate) - new Date() < 7 &&
+        (new Date(x.discountEndDate) - new Date() < 604800000 &&
           new Date(x.discountEndDate) - new Date() > 0) ||
         !discount
       )
     }
   }
 
-  let discountFilter = discount.filter(dateFilter(discount))
-  const displayDiscountEnd = discountFilter.filter((item, index) => {
+  // 過濾出快到期頁面要呈現的資料
+  let discountEndFilter = discount.filter(dateEndFilter(discount))
+  const displayDiscountEnd = discountEndFilter.filter((item, index) => {
     return index < pageNow * 6 && index >= (pageNow - 1) * 6
   })
-
-  // //過濾頁面的函式
-  // function searchFor(searchText) {
-  //   return function (x) {
-  //     return (
-  //       x.productName.includes(searchText) ||
-  //       !searchText
-  //     )
-  //   }
-  // }
-
-  // // 過濾出快到期要呈現的資料
-  // let data = discount.filter(searchFor(searchText))
-  // const displayDiscountEnd = data.filter((item, index) => {
-  //   return index < pageNow * 6 && index >= (pageNow - 1) * 6
-  // })
 
   const display2 = (
     <>
@@ -304,8 +288,157 @@ function MemberMyDiscount(props) {
       </Pagination>
     </>
   )
-  /*
-   */
+
+  // 過濾出已到期要呈現的資料
+  function dateExpireFilter(discount) {
+    return function (x) {
+      return new Date(x.discountEndDate) - new Date() < 0 || !discount
+    }
+  }
+
+  // 過濾出已到期頁面要呈現的資料
+  let discountExpireFilter = discount.filter(dateExpireFilter(discount))
+  const displayDiscountExpire = discountExpireFilter.filter((item, index) => {
+    return index < pageNow * 6 && index >= (pageNow - 1) * 6
+  })
+
+  const display3 = (
+    <>
+      <Container style={{ padding: '30px' }}>
+        <div className="row">
+          {displayDiscountExpire.map((value, index) => {
+            return (
+              <>
+                <Card
+                  className="col-mb-auto"
+                  style={{ width: '15rem' }}
+                  key={index}
+                >
+                  <Card.Header>折扣編號：{value.discountID}</Card.Header>
+                  <Card.Img variant="top" src="holder.js/100px180" />
+                  <Card.Body>
+                    <Card.Title>{value.discountName}</Card.Title>
+                    <Card.Text>{value.discountEndDate}</Card.Text>
+                    <Button
+                      variant="danger"
+                      onClick={() => {
+                        handleShow()
+                      }}
+                    >
+                      刪除此折扣
+                    </Button>
+                  </Card.Body>
+                </Card>
+                <Modal
+                  show={showModal}
+                  onHide={handleClose}
+                  {...props}
+                  // size="lg"
+                  aria-labelledby="contained-modal-title-vcenter"
+                  centered
+                >
+                  <Modal.Header closeButton>
+                    <Modal.Title>折扣編號：{value.discountID}</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    確定要刪除「{value.discountName}」折扣？
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                      取消刪除
+                    </Button>
+                    <Button
+                      variant="primary"
+                      onClick={() => {
+                        handleClose()
+                        discount.splice(value, 1)
+                        setDeleteDiscountToLocalStorage(discount)
+                      }}
+                    >
+                      確認刪除
+                    </Button>
+                  </Modal.Footer>
+                </Modal>
+              </>
+            )
+          })}
+        </div>
+      </Container>
+      <div className="row">
+        <Button
+          className="justify-content-center col-mb-auto"
+          variant="danger"
+          onClick={() => {
+            handleShow()
+          }}
+        >
+          一鍵刪除
+        </Button>
+        <Pagination className="justify-content-center col-mb-auto">
+          <Pagination.First
+            onClick={() =>
+              props.history.push('/Member/MemberMyDiscount/page/1')
+            }
+          />
+          <Pagination.Prev
+            onClick={() =>
+              props.history.push('/Member/MemberMyDiscount/page/' + pagePrev)
+            }
+          />
+
+          <Pagination.Item active>{props.match.params.page}</Pagination.Item>
+
+          <Pagination.Next
+            onClick={() =>
+              props.history.push('/Member/MemberMyDiscount/page/' + pageNext)
+            }
+          />
+          <Pagination.Last
+            onClick={() =>
+              props.history.push(
+                '/Member/MemberMyDiscount/page/' + discountPageTotal
+              )
+            }
+          />
+        </Pagination>
+        {displayDiscountExpire.map((value, index) => {
+          return (
+            <>
+              <Modal
+                show={showModal}
+                onHide={handleClose}
+                {...props}
+                // size="lg"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+                key={index}
+              >
+                <Modal.Header closeButton>
+                  <Modal.Title>全部刪除</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>確定要刪除所有已到期折扣？</Modal.Body>
+                <Modal.Footer>
+                  <Button variant="secondary" onClick={handleClose}>
+                    取消刪除
+                  </Button>
+                  <Button
+                    variant="primary"
+                    onClick={() => {
+                      handleClose()
+                      discount.splice(value)
+                      setDeleteDiscountToLocalStorage(discount)
+                    }}
+                  >
+                    確認刪除
+                  </Button>
+                </Modal.Footer>
+              </Modal>
+            </>
+          )
+        })}
+      </div>
+    </>
+  )
 
   return (
     <>
@@ -323,8 +456,8 @@ function MemberMyDiscount(props) {
             <Tab eventKey="ce" title="即將到期">
               {loading ? spinner : display2}
             </Tab>
-            <Tab eventKey="au" title="已使用">
-              {/* {loading ? spinner : display} */}
+            <Tab eventKey="au" title="已到期">
+              {loading ? spinner : display3}
             </Tab>
             <Tab
               title={

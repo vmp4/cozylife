@@ -93,6 +93,7 @@ const MemberMyCollection = (props) => {
 
   // 過濾出要目前頁面要呈現的資料
   let dataFilter = product.filter(searchFor(searchText))
+  // console.log(dataFilter)
   const displayProduct = dataFilter.filter((item, index) => {
     return index < pageNow * 6 && index >= (pageNow - 1) * 6
   })
