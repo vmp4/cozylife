@@ -3,3 +3,6 @@ node_modules/
 db.json
 package-lock.json
 thumbs.db
+src/pages/CollectionPage.js
+src/pages/DiscountPage.js
+src/pages/ProPagination.js
