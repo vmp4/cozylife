@@ -1,19 +1,80 @@
 import React, { useState, useEffect } from 'react'
-import Form from 'react-bootstrap/Form'
-import { Col, Button, Row, Container } from 'react-bootstrap'
+import { Col, Container } from 'react-bootstrap'
 import Spinner from 'react-bootstrap/Spinner'
-import { BrowserRouter as Router } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 
-function MyFile() {
-  const [validated, setValidated] = useState(false)
+function MyFile(props) {
+  // const userid = props.match.params.CustomerID
+  // const [user, setUser] = useState([])
   const [loading, setLoading] = useState(false)
-  const [user, setUser] = useState([])
+  const [userID, setUserID] = useState('')
+  const [name, setName] = useState('')
+  const [sex, setSex] = useState('')
+  const [userName, setUserName] = useState('')
+  const [birth, setBirth] = useState('')
+  const [tel, setTel] = useState('')
+  const [mail, setMail] = useState('')
+  const [address, setAddress] = useState('')
+
+  async function getUserFromServer() {
+    setLoading(true)
+
+    const url = 'http://localhost:6001/customer/1' // + userid
+
+    const request = new Request(url, {
+      method: 'GET',
+      headers: new Headers({
+        Accept: 'application/json',
+        'Content-type': 'application',
+      }),
+    })
+
+    const response = await fetch(request)
+    const data = await response.json()
+
+    // const data = dataArr[0]
+
+    // setUser(data)
+    setUserID(data.CustomerID)
+    setName(data.CustomerName)
+    setSex(data.CustomerSex)
+    setUserName(data.CustomerUsername)
+    setBirth(data.CustomerBirthday)
+    setTel(data.CustomerTel)
+    setMail(data.CustomerMail)
+    setAddress(data.CustomerAdd)
+  }
+
+  async function updateUserToServer() {
+    setLoading(true)
+
+    const newData = { userID, name, userName, sex, birth, tel, mail, address }
+
+    const url = 'http://localhost:6001/customer/1' // + userid
+
+    const request = new Request(url, {
+      method: 'PUT',
+      body: JSON.stringify(newData),
+      headers: new Headers({
+        Accept: 'application/json',
+        'Content-type': 'application/json',
+      }),
+    })
+    console.log(newData)
+
+    const response = await fetch(request)
+    const data = await response.json()
+
+    console.log(data)
+
+    setTimeout(() => {
+      setLoading(false)
+      alert('儲存完成')
+    })
+  }
 
   useEffect(() => {
-    setLoading(true)
-    const newUser = localStorage.getItem('user') || '[]'
-    console.log(JSON.parse(newUser))
-    setUser(JSON.parse(newUser))
+    getUserFromServer()
   }, [])
 
   useEffect(() => {
@@ -32,219 +93,169 @@ function MyFile() {
     </>
   )
 
-  const handleSubmit = (event) => {
-    const form = event.currentTarget
-    if (form.checkValidity() === false) {
-      event.preventDefault()
-      event.stopPropagation()
-    }
-
-    setValidated(true)
-  }
-
   const display = (
     <>
-      {user.map((value, index) => {
-        return <h4 key={index}>會員ID- {value.CustomerID}</h4>
-      })}
-      <Form noValidate validated={validated} onSubmit={handleSubmit}>
-        <Form.Group as={Row} controlId="validationCustomname">
-          <Form.Label column sm="4">
-            姓名
-          </Form.Label>
-          <Col sm="4">
-            {user.map((value, index) => {
-              return (
-                <Form.Control
-                  key={index}
-                  required
-                  type="text"
-                  placeholder="請輸入姓名"
-                  defaultValue={value.CustomerName}
-                  //   plaintext
-                />
-              )
-            })}
-          </Col>
-          <Form.Control.Feedback type="invalid">
-            請輸入姓名。
-          </Form.Control.Feedback>
+      <h4>會員ID- {userID}</h4>
+      <div className="form-group">
+        <div className="form-row">
+          <label className="col-md-2">姓名</label>
+          <div className="col-md-4">
+            <input
+              required
+              className="form-control"
+              type="text"
+              placeholder="請輸入姓名"
+              value={name}
+              onChange={(event) => {
+                setName(event.target.value)
+              }}
+              //   plaintext
+            />
+          </div>
+          <div className="invalid-feedback">請輸入姓名。</div>
 
           <div id="radiotop">
-            {user.map((value, index) => {
-              if (value.CustomerSex === '男') {
-                return (
-                  <div className="mb-3" key={index}>
-                    <Form.Check
-                      inline
-                      label="男"
-                      type="radio"
-                      id="custom-inline-radio"
-                      name="inlineRadioOptions"
-                      defaultChecked
-                    />
-                    <Form.Check
-                      inline
-                      label="女"
-                      type="radio"
-                      id="custom-inline-radio"
-                      name="inlineRadioOptions"
-                    />
-                  </div>
-                )
-              } else {
-                return (
-                  <div className="mb-3" key={index}>
-                    <Form.Check
-                      inline
-                      label="男"
-                      type="radio"
-                      id="custom-inline-radio"
-                      name="inlineRadioOptions"
-                    />
-                    <Form.Check
-                      inline
-                      label="女"
-                      type="radio"
-                      id="custom-inline-radio"
-                      name="inlineRadioOptions"
-                      defaultChecked
-                    />
-                  </div>
-                )
-              }
-            })}
+            <div className="mb-3">
+              <label class="radio-inline" for="txt_sex">
+                <input
+                  type="radio"
+                  name="txt_sex"
+                  id="txt_sex"
+                  value="男"
+                  check={sex === '男' ? 'checked' : null}
+                  onChange={(event) => {
+                    setSex(event.target.value)
+                  }}
+                />{' '}
+                男
+              </label>{' '}
+              <label class="radio-inline" for="txt_sex1">
+                <input
+                  type="radio"
+                  name="txt_sex"
+                  id="txt_sex1"
+                  value="女"
+                  check={sex === '女' ? 'checked' : null}
+                  onChange={(event) => {
+                    setSex(event.target.value)
+                  }}
+                />{' '}
+                女
+              </label>
+              {/* {sex === '男' ? check1 : check2} */}
+            </div>
           </div>
-        </Form.Group>
+        </div>
+      </div>
 
-        <Form.Group as={Row} controlId="validationCustomUsername">
-          <Form.Label column sm="4">
-            帳號
-          </Form.Label>
-          <Col sm="6">
-            {user.map((value, index) => {
-              return (
-                <Form.Control
-                  key={index}
-                  required
-                  type="text"
-                  placeholder=""
-                  defaultValue={value.CustomerUsername}
-                  plaintext
-                  readOnly
-                  disabled
-                />
-              )
-            })}
-          </Col>
-        </Form.Group>
+      <div className="form-group">
+        <div className="form-row">
+          <label className="col-md-2">帳號</label>
+          <div className="col-md-4">
+            <input
+              required
+              type="text"
+              value={userName}
+              className="form-control-plaintext"
+              readOnly
+              disabled
+            />
+          </div>
+        </div>
+      </div>
 
-        <Form.Group as={Row} controlId="validationCustomTel">
-          <Form.Label column sm="4">
-            生日
-          </Form.Label>
-          <Col sm="6">
-            {user.map((value, index) => {
-              return (
-                <Form.Control
-                  key={index}
-                  type="text"
-                  placeholder="請輸入手機號碼"
-                  aria-describedby="inputPhoneNumber"
-                  defaultValue={value.CustomerBirthday}
-                  plaintext
-                  required
-                />
-              )
-            })}
-          </Col>
-          <Form.Control.Feedback type="invalid">
-            欄位請勿空白。
-          </Form.Control.Feedback>
-        </Form.Group>
+      <div className="form-group">
+        <div className="form-row">
+          <label className="col-md-2">生日</label>
+          <div className="col-md-4">
+            <input
+              type="text"
+              placeholder="請輸入生日日期"
+              className="form-control-plaintext"
+              value={birth}
+              required
+              onChange={(event) => {
+                setBirth(event.target.value)
+              }}
+            />
+          </div>
+          <div className="invalid-feedback">欄位請勿空白。</div>
+        </div>
+      </div>
 
-        <Form.Group as={Row} controlId="validationCustomTel">
-          <Form.Label column sm="4">
-            手機
-          </Form.Label>
-          <Col sm="6">
-            {user.map((value, index) => {
-              return (
-                <Form.Control
-                  key={index}
-                  type="text"
-                  placeholder="請輸入手機號碼"
-                  aria-describedby="inputPhoneNumber"
-                  defaultValue={value.CustomerTel}
-                  plaintext
-                  required
-                />
-              )
-            })}
-          </Col>
-          <Form.Control.Feedback type="invalid">
-            欄位請勿空白。
-          </Form.Control.Feedback>
-        </Form.Group>
+      <div className="form-group">
+        <div className="form-row">
+          <label className="col-md-2">手機</label>
+          <div className="col-md-4">
+            <input
+              type="text"
+              placeholder="請輸入手機號碼"
+              className="form-control-plaintext"
+              value={tel}
+              required
+              onChange={(event) => {
+                setTel(event.target.value)
+              }}
+            />
+          </div>
+          <div className="invalid-feedback">欄位請勿空白。</div>
+        </div>
+      </div>
 
-        <Form.Group as={Row} controlId="validationCustomerMail">
-          <Form.Label column sm="4">
-            信箱
-          </Form.Label>
-          <Col sm="6">
-            {user.map((value, index) => {
-              return (
-                <Form.Control
-                  key={index}
-                  type="text"
-                  placeholder="請輸入電子信箱"
-                  aria-describedby="inputEmail"
-                  defaultValue={value.CustomerMail}
-                  plaintext
-                  required
-                />
-              )
-            })}
-          </Col>
-          <Form.Control.Feedback type="invalid">
-            欄位請勿空白。
-          </Form.Control.Feedback>
-        </Form.Group>
+      <div className="form-group">
+        <div className="form-row">
+          <label className="col-md-2">信箱</label>
+          <div className="col-md-4">
+            <input
+              type="email"
+              placeholder="請輸入電子信箱"
+              className="form-control-plaintext"
+              value={mail}
+              required
+              onChange={(event) => {
+                setMail(event.target.value)
+              }}
+            />
+          </div>
+          <div className="invalid-feedback">欄位請勿空白。</div>
+        </div>
+      </div>
 
-        <Form.Group as={Row} controlId="validationCustomerAdd">
-          <Form.Label column sm="4">
-            地址
-          </Form.Label>
+      <div className="form-group">
+        <div className="form-row">
+          <label className="col-md-2">地址</label>
           <Col sm="8">
-            {user.map((value, index) => {
-              return (
-                <Form.Control
-                  key={index}
-                  type="text"
-                  placeholder="請輸入地址"
-                  defaultValue={value.CustomerAdd}
-                  plaintext
-                  required
-                />
-              )
-            })}
+            <input
+              type="text"
+              placeholder="請輸入地址"
+              className="form-control-plaintext"
+              value={address}
+              required
+              onChange={(event) => {
+                setAddress(event.target.value)
+              }}
+            />
           </Col>
-          <Form.Control.Feedback type="invalid">
-            欄位請勿空白。
-          </Form.Control.Feedback>
-        </Form.Group>
-        <Button type="submit">確認修改</Button>
-      </Form>
+          <div className="invalid-feedback">欄位請勿空白。</div>
+        </div>
+      </div>
+
+      <button
+        className="btn btn-primary"
+        onClick={() => {
+          updateUserToServer()
+        }}
+      >
+        確認修改
+      </button>
     </>
   )
 
   return (
     <>
-      <Router>
-        <Container id="filetop">{loading ? spinner : display}</Container>
-      </Router>
+      <Container id="filetop">{loading ? spinner : display}</Container>
     </>
   )
 }
 
-export default MyFile
+export default withRouter(MyFile)

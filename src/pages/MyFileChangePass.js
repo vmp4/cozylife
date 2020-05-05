@@ -7,11 +7,7 @@ function MyFileChangePass() {
   const [validated, setValidated] = useState(false)
   const [userPW, setUserPW] = useState([])
 
-  useEffect(() => {
-    const newUserPW = localStorage.getItem('user') || '[]'
-    // console.log(JSON.parse(newUser))
-    setUserPW(JSON.parse(newUserPW))
-  }, [])
+  useEffect(() => {}, [])
 
   const handleSubmit = (event) => {
     const form = event.currentTarget

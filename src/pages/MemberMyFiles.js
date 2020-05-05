@@ -4,7 +4,7 @@ import Tab from 'react-bootstrap/Tab'
 import { Container } from 'react-bootstrap'
 import { BrowserRouter as Router } from 'react-router-dom'
 import MyFile from './MyFile'
-import MyFileChangePass from './MyFileChangePass'
+// import MyFileChangePass from './MyFileChangePass'
 import { FaAngleLeft } from 'react-icons/fa'
 
 function MemberMyFiles() {
@@ -25,7 +25,7 @@ function MemberMyFiles() {
             {/* <Tab eventKey="ce" title="即將到期"></Tab>
         <Tab eventKey="au" title="已使用"></Tab> */}
             <Tab eventKey="cpw" title="修改密碼">
-              <MyFileChangePass />
+              {/* <MyFileChangePass /> */}
             </Tab>
             <Tab title={<></>} disabled></Tab>
             <Tab
