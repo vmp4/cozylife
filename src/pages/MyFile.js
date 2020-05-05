@@ -114,7 +114,7 @@ function MyFile(props) {
           </div>
           <div className="invalid-feedback">請輸入姓名。</div>
 
-          <div id="radiotop">
+          {/* <div id="radiotop">
             <div className="mb-3">
               <label className="radio-inline" htmlFor="txt_sex">
                 <input
@@ -141,10 +141,10 @@ function MyFile(props) {
                   }}
                 />{' '}
                 女
-              </label>
-              {/* {sex === '男' ? check1 : check2} */}
-            </div>
-          </div>
+              </label> */}
+          {/* {sex === '男' ? check1 : check2} */}
+          {/* </div>
+          </div> */}
         </div>
       </div>
 
