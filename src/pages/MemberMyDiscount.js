@@ -174,23 +174,46 @@ function MemberMyDiscount(props) {
     </>
   )
 
-  /* 
-  
-  //過濾頁面的函式
-  function searchFor(searchText) {
+  // const dates = ["2018-09-12", "2018-10-18", "2018-12-30"];
+  // const filteredDates = dates.filter(d => new Date(d) - new Date() > 0);
+
+  // function isBigEnough(value) {
+  // return value >= 10;
+  // }
+
+  // var filtered = [12, 5, 8, 130, 44].filter(isBigEnough);
+  // // filtered is [12, 130, 44]
+
+  function dateFilter(discount) {
     return function (x) {
       return (
-        x.discountEndDate.includes(searchText) ||
-        !searchText
+        (new Date(x.discountEndDate) - new Date() < 7 &&
+          new Date(x.discountEndDate) - new Date() > 0) ||
+        !discount
       )
     }
   }
 
-  // 過濾出快到期要呈現的資料
-  let data = discount.filter(searchFor(searchText))
-  const displayDiscountEnd = data.filter((item, index) => {
+  let discountFilter = discount.filter(dateFilter(discount))
+  const displayDiscountEnd = discountFilter.filter((item, index) => {
     return index < pageNow * 6 && index >= (pageNow - 1) * 6
   })
+
+  // //過濾頁面的函式
+  // function searchFor(searchText) {
+  //   return function (x) {
+  //     return (
+  //       x.productName.includes(searchText) ||
+  //       !searchText
+  //     )
+  //   }
+  // }
+
+  // // 過濾出快到期要呈現的資料
+  // let data = discount.filter(searchFor(searchText))
+  // const displayDiscountEnd = data.filter((item, index) => {
+  //   return index < pageNow * 6 && index >= (pageNow - 1) * 6
+  // })
 
   const display2 = (
     <>
@@ -280,7 +303,9 @@ function MemberMyDiscount(props) {
         />
       </Pagination>
     </>
-  ) */
+  )
+  /*
+   */
 
   return (
     <>
@@ -296,7 +321,7 @@ function MemberMyDiscount(props) {
               {loading ? spinner : display}
             </Tab>
             <Tab eventKey="ce" title="即將到期">
-              {/* {loading ? spinner : display2} */}
+              {loading ? spinner : display2}
             </Tab>
             <Tab eventKey="au" title="已使用">
               {/* {loading ? spinner : display} */}

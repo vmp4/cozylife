@@ -116,7 +116,7 @@ function MyFile(props) {
 
           <div id="radiotop">
             <div className="mb-3">
-              <label class="radio-inline" for="txt_sex">
+              <label className="radio-inline" htmlFor="txt_sex">
                 <input
                   type="radio"
                   name="txt_sex"
@@ -129,7 +129,7 @@ function MyFile(props) {
                 />{' '}
                 男
               </label>{' '}
-              <label class="radio-inline" for="txt_sex1">
+              <label className="radio-inline" htmlFor="txt_sex1">
                 <input
                   type="radio"
                   name="txt_sex"
