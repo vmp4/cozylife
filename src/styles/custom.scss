@@ -58,6 +58,17 @@ ul {
   margin: 150px;
 }
 
+#disDet:hover {
+  background-color: #c73636;
+  border-color: #c73636;
+}
+
+#useDis:hover {
+  color: #00888d;
+  background-color: #fde1c6;
+  border-color: #00888d;
+}
+
 // Collection Pages
 #collectiontabs {
   margin-top: 70px;
@@ -70,6 +81,18 @@ ul {
 #loadcollection {
   margin: 150px;
 }
+
+#colDet:hover {
+  background-color: #c73636;
+  border-color: #c73636;
+}
+
+#goShop:hover {
+  color: #00888d;
+  background-color: #fde1c6;
+  border-color: #00888d;
+}
+
 
 // Inquire Pages
 #inquiretop {

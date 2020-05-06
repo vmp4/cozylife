@@ -5,7 +5,7 @@ import { BrowserRouter as Router } from 'react-router-dom'
 
 function MyFileChangePass() {
   const [validated, setValidated] = useState(false)
-  // const [userPW, setUserPW] = useState([])
+  const [CustomerPassword, setCustomerPassword] = useState([])
 
   useEffect(() => {}, [])
 

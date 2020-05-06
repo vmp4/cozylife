@@ -7,14 +7,14 @@ function MyFile(props) {
   // const userid = props.match.params.CustomerID
   // const [user, setUser] = useState([])
   const [loading, setLoading] = useState(false)
-  const [userID, setUserID] = useState('')
-  const [name, setName] = useState('')
-  const [sex, setSex] = useState('')
-  const [userName, setUserName] = useState('')
-  const [birth, setBirth] = useState('')
-  const [tel, setTel] = useState('')
-  const [mail, setMail] = useState('')
-  const [address, setAddress] = useState('')
+  const [CustomerID, setCustomerID] = useState('')
+  const [CustomerName, setCustomerName] = useState('')
+  const [CustomerSex, setCustomerSex] = useState('')
+  const [CustomerUsername, setCustomerUsername] = useState('')
+  const [CustomerBirthday, setCustomerBirthday] = useState('')
+  const [CustomerTel, setCustomerTel] = useState('')
+  const [CustomerMail, setCustomerMail] = useState('')
+  const [CustomerAdd, setCustomerAdd] = useState('')
 
   async function getUserFromServer() {
     setLoading(true)
@@ -25,7 +25,7 @@ function MyFile(props) {
       method: 'GET',
       headers: new Headers({
         Accept: 'application/json',
-        'Content-type': 'application',
+        'Content-type': 'application/json',
       }),
     })
 
@@ -35,22 +35,31 @@ function MyFile(props) {
     // const data = dataArr[0]
 
     // setUser(data)
-    setUserID(data.CustomerID)
-    setName(data.CustomerName)
-    setSex(data.CustomerSex)
-    setUserName(data.CustomerUsername)
-    setBirth(data.CustomerBirthday)
-    setTel(data.CustomerTel)
-    setMail(data.CustomerMail)
-    setAddress(data.CustomerAdd)
+    setCustomerID(data.CustomerID)
+    setCustomerName(data.CustomerName)
+    setCustomerSex(data.CustomerSex)
+    setCustomerUsername(data.CustomerUsername)
+    setCustomerBirthday(data.CustomerBirthday)
+    setCustomerTel(data.CustomerTel)
+    setCustomerMail(data.CustomerMail)
+    setCustomerAdd(data.CustomerAdd)
   }
 
   async function updateUserToServer() {
     setLoading(true)
 
-    const newData = { userID, name, userName, sex, birth, tel, mail, address }
+    const newData = {
+      CustomerID,
+      CustomerName,
+      CustomerUsername,
+      CustomerSex,
+      CustomerBirthday,
+      CustomerTel,
+      CustomerMail,
+      CustomerAdd,
+    }
 
-    const url = 'http://localhost:6001/customer/1' // + userid
+    const url = 'http://localhost:6001/customer/' + CustomerID
 
     const request = new Request(url, {
       method: 'PUT',
@@ -60,7 +69,6 @@ function MyFile(props) {
         'Content-type': 'application/json',
       }),
     })
-    console.log(newData)
 
     const response = await fetch(request)
     const data = await response.json()
@@ -95,7 +103,7 @@ function MyFile(props) {
 
   const display = (
     <>
-      <h4>會員ID- {userID}</h4>
+      <h4>會員ID- {CustomerID}</h4>
       <div className="form-group">
         <div className="form-row">
           <label className="col-md-2">姓名</label>
@@ -105,16 +113,16 @@ function MyFile(props) {
               className="form-control"
               type="text"
               placeholder="請輸入姓名"
-              value={name}
+              value={CustomerName}
               onChange={(event) => {
-                setName(event.target.value)
+                setCustomerName(event.target.value)
               }}
               //   plaintext
             />
           </div>
           <div className="invalid-feedback">請輸入姓名。</div>
 
-          {/* <div id="radiotop">
+          <div id="radiotop">
             <div className="mb-3">
               <label className="radio-inline" htmlFor="txt_sex">
                 <input
@@ -122,9 +130,9 @@ function MyFile(props) {
                   name="txt_sex"
                   id="txt_sex"
                   value="男"
-                  check={sex === '男' ? 'checked' : null}
+                  checked={CustomerSex === '男'}
                   onChange={(event) => {
-                    setSex(event.target.value)
+                    setCustomerSex(event.target.value)
                   }}
                 />{' '}
                 男
@@ -135,16 +143,15 @@ function MyFile(props) {
                   name="txt_sex"
                   id="txt_sex1"
                   value="女"
-                  check={sex === '女' ? 'checked' : null}
+                  checked={CustomerSex === '女'}
                   onChange={(event) => {
-                    setSex(event.target.value)
+                    setCustomerSex(event.target.value)
                   }}
                 />{' '}
                 女
-              </label> */}
-          {/* {sex === '男' ? check1 : check2} */}
-          {/* </div>
-          </div> */}
+              </label>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -155,7 +162,7 @@ function MyFile(props) {
             <input
               required
               type="text"
-              value={userName}
+              value={CustomerUsername}
               className="form-control-plaintext"
               readOnly
               disabled
@@ -172,10 +179,10 @@ function MyFile(props) {
               type="text"
               placeholder="請輸入生日日期"
               className="form-control-plaintext"
-              value={birth}
+              value={CustomerBirthday}
               required
               onChange={(event) => {
-                setBirth(event.target.value)
+                setCustomerBirthday(event.target.value)
               }}
             />
           </div>
@@ -191,10 +198,10 @@ function MyFile(props) {
               type="text"
               placeholder="請輸入手機號碼"
               className="form-control-plaintext"
-              value={tel}
+              value={CustomerTel}
               required
               onChange={(event) => {
-                setTel(event.target.value)
+                setCustomerTel(event.target.value)
               }}
             />
           </div>
@@ -210,10 +217,10 @@ function MyFile(props) {
               type="email"
               placeholder="請輸入電子信箱"
               className="form-control-plaintext"
-              value={mail}
+              value={CustomerMail}
               required
               onChange={(event) => {
-                setMail(event.target.value)
+                setCustomerMail(event.target.value)
               }}
             />
           </div>
@@ -229,10 +236,10 @@ function MyFile(props) {
               type="text"
               placeholder="請輸入地址"
               className="form-control-plaintext"
-              value={address}
+              value={CustomerAdd}
               required
               onChange={(event) => {
-                setAddress(event.target.value)
+                setCustomerAdd(event.target.value)
               }}
             />
           </Col>
