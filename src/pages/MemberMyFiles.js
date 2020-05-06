@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import { BrowserRouter as Router, withRouter } from 'react-router-dom'
+import { Container, Button } from 'react-bootstrap'
 import Tab from 'react-bootstrap/Tab'
 import Tabs from 'react-bootstrap/Tabs'
-import { Container, Col, Button } from 'react-bootstrap'
+import Modal from 'react-bootstrap/Modal'
 import Spinner from 'react-bootstrap/Spinner'
-import Form from 'react-bootstrap/Form'
 import { FaAngleLeft } from 'react-icons/fa'
+import $ from 'jquery'
 // import MyFile from './MyFile'
 // import MyFileChangePass from './MyFileChangePass'
 
-function MemberMyFiles() {
+function MemberMyFiles(props) {
   const [key, setKey] = useState('cpw')
   const [loading, setLoading] = useState(false)
+  const [modalWord, setModalword] = useState('')
+  const [showModal, setShowModal] = useState(false)
   const [CustomerID, setCustomerID] = useState('')
   const [CustomerSex, setCustomerSex] = useState('')
   const [CustomerTel, setCustomerTel] = useState('')
@@ -20,8 +23,12 @@ function MemberMyFiles() {
   const [CustomerMail, setCustomerMail] = useState('')
   const [CustomerUsername, setCustomerUsername] = useState('')
   const [CustomerBirthday, setCustomerBirthday] = useState('')
-  const [CustomerPassword, setCustomerPassword] = useState([])
+  const [CustomerPassword, setCustomerPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [createNewPassword, setCreateNewPassword] = useState('')
+  const [confirmNewPassword, setConfirmNewPassword] = useState('')
 
+  // 從後端提取會員資料
   async function getUserFromServer() {
     setLoading(true)
 
@@ -52,6 +59,7 @@ function MemberMyFiles() {
     setCustomerPassword(data.CustomerUsername)
   }
 
+  // 會員資料輸出後端修改
   async function updateUserToServer() {
     setLoading(true)
 
@@ -62,8 +70,8 @@ function MemberMyFiles() {
       CustomerAdd,
       CustomerName,
       CustomerMail,
-      CustomerUsername,
       CustomerBirthday,
+      CustomerUsername,
       CustomerPassword,
     }
 
@@ -81,11 +89,50 @@ function MemberMyFiles() {
     const response = await fetch(request)
     const data = await response.json()
 
-    console.log(data)
+    // console.log(data)
 
     setTimeout(() => {
       setLoading(false)
       alert('儲存完成')
+    })
+  }
+
+  // 密碼輸出後端修改
+  async function updatePasswordToServer() {
+    setLoading(true)
+
+    const newData = {
+      CustomerID,
+      CustomerSex,
+      CustomerTel,
+      CustomerAdd,
+      CustomerName,
+      CustomerMail,
+      CustomerBirthday,
+      CustomerUsername,
+      CustomerPassword,
+    }
+
+    const url = 'http://localhost:6001/customer/' + CustomerID
+
+    const request = new Request(url, {
+      method: 'PUT',
+      body: JSON.stringify(newData),
+      headers: new Headers({
+        Accept: 'application/json',
+        'Content-type': 'application/json',
+      }),
+    })
+
+    const response = await fetch(request)
+    const data = await response.json()
+
+    // console.log(data)
+
+    setTimeout(() => {
+      setLoading(false)
+      setModalword('儲存完成。')
+      handleShow()
     })
   }
 
@@ -109,6 +156,11 @@ function MemberMyFiles() {
     </>
   )
 
+  // Modal用設定
+  const handleClose = () => setShowModal(false)
+  const handleShow = () => setShowModal(true)
+
+  // 會員詳細資料頁面
   const display = (
     <>
       <h4>會員ID- {CustomerID}</h4>
@@ -239,7 +291,7 @@ function MemberMyFiles() {
       <div className="form-group">
         <div className="form-row">
           <label className="col-md-2">地址</label>
-          <Col sm="8">
+          <div className="col-md-4">
             <input
               type="text"
               placeholder="請輸入地址"
@@ -250,13 +302,13 @@ function MemberMyFiles() {
                 setCustomerAdd(event.target.value)
               }}
             />
-          </Col>
+          </div>
           <div className="invalid-feedback">欄位請勿空白。</div>
         </div>
       </div>
 
       <button
-        className="btn btn-primary"
+        className="btn btn-secondary"
         onClick={() => {
           updateUserToServer()
         }}
@@ -266,57 +318,139 @@ function MemberMyFiles() {
     </>
   )
 
-  const display2 =(
+  // 新密碼確認
+  function checkSecondPass(value1, value2) {
+    if (value1 === '') {
+      setModalword('請輸入新密碼！')
+      handleShow()
+      $('#firstPass').focus()
+      return false
+    }
+    for (let npw = 0; npw < value1.length; npw++) {
+      if (value1.charAt(npw) === ' ' || value1.charAt(npw) === '"') {
+        setModalword('密碼不可以含有空白或雙引號！')
+        handleShow()
+        $('#firstPass').focus()
+        return false
+      }
+      if (value1.length <= 2) {
+        setModalword('密碼長度必須大於8個字母！')
+        handleShow()
+        $('#firstPass').focus()
+        return false
+      }
+      if (value2 === '') {
+        setModalword('請輸入確認密碼！')
+        handleShow()
+        $('#secondPass').focus()
+        return false
+      }
+      if (value1 !== value2) {
+        setModalword('確認密碼輸入不一樣,請重新輸入！')
+        handleShow()
+        $('#secondPass').focus()
+        return false
+      }
+    }
+    return true
+  }
+
+  // 密碼並確認提交
+  function handelSubmit() {
+    if (confirmPassword === '') {
+      setModalword('沒有輸入原本密碼！')
+      handleShow()
+      $('#oraginPass').focus()
+    } else if (CustomerPassword !== confirmPassword) {
+      setModalword('原本密碼輸入錯誤！')
+      handleShow()
+      $('#oraginPass').focus()
+      return false
+    } else if (!checkSecondPass(createNewPassword, confirmNewPassword)) {
+      return false
+    } else {
+      setCreateNewPwToCustomerPw()
+      updatePasswordToServer()
+    }
+  }
+
+  function setCreateNewPwToCustomerPw() {
+    setCustomerPassword(createNewPassword)
+    console.log(CustomerPassword)
+  }
+
+  // 修改密碼頁面
+  const display2 = (
     <>
-      <Router>
-        <Container id="filetop">
-          <Form noValidate validated={validated} onSubmit={handleSubmit}>
-            <Form.Group controlId="validationCustomname">
-              <Form.Label column sm="4">
-                請輸入原本密碼：
-              </Form.Label>
-              <Col sm="6">
-                <Form.Control
-                  required
-                  type="text"
-                  placeholder="請輸入密碼"
-                  //   plaintext
-                />
-              </Col>
-            </Form.Group>
+      <div className="form-group">
+        <label className="col-sm-4" style={{ marginLeft: '10px' }}>
+          請輸入原本密碼：
+        </label>
+        <div className="col-md-6">
+          <input
+            required
+            id="oraginPass"
+            type="password"
+            style={{ padding: '10px' }}
+            placeholder="請點此輸入密碼"
+            className="form-control-plaintext"
+            onChange={(event) => {
+              setConfirmPassword(event.target.value)
+            }}
+          />
+        </div>
+      </div>
 
-            <Form.Group controlId="validationCustomname">
-              <Form.Label column sm="4">
-                輸入新密碼：
-              </Form.Label>
-              <Col sm="6">
-                <Form.Control
-                  required
-                  type="text"
-                  placeholder="請輸入新密碼"
-                  //   plaintext
-                />
-              </Col>
-            </Form.Group>
+      <div className="form-group">
+        <label className="col-sm-4" style={{ marginLeft: '10px' }}>
+          輸入新密碼：
+        </label>
+        <div className="col-md-6">
+          <input
+            required
+            id="firstPass"
+            type="password"
+            style={{ padding: '10px' }}
+            placeholder="請點此輸入新密碼"
+            className="form-control-plaintext"
+            onChange={(event) => {
+              setCreateNewPassword(event.target.value)
+            }}
+          />
+        </div>
+      </div>
 
-            <Form.Group controlId="validationCustomname">
-              <Form.Label column sm="4">
-                確認新密碼：
-              </Form.Label>
-              <Col sm="6">
-                <Form.Control
-                  required
-                  type="text"
-                  placeholder="請再次輸入新密碼"
-                  //   plaintext
-                />
-              </Col>
-            </Form.Group>
+      <div className="form-group">
+        <label className="col-sm-4" style={{ marginLeft: '10px' }}>
+          確認新密碼：
+        </label>
+        <div className="col-md-6">
+          <input
+            required
+            id="secondPass"
+            type="password"
+            style={{ padding: '10px' }}
+            placeholder="請點此再次輸入新密碼"
+            className="form-control-plaintext"
+            onChange={(event) => {
+              setConfirmNewPassword(event.target.value)
+              // setCustomerPassword(event.target.value)
+            }}
+          />
+        </div>
+      </div>
 
-            <Button type="submit">確認修改</Button>
-          </Form>
-        </Container>
-      </Router>
+      <button
+        style={{ marginLeft: '20px' }}
+        className="btn btn-secondary"
+        onClick={() => {
+          // setCreateNewPwToCustomerPw()
+          // updatePasswordToServer()
+          handelSubmit()
+        }}
+      >
+        確認修改
+      </button>
     </>
   )
 
@@ -335,7 +469,7 @@ function MemberMyFiles() {
               {/* <MyFile /> */}
             </Tab>
             <Tab eventKey="cpw" title="修改密碼">
-            <Container id="filetop">{loading ? spinner : display2}</Container>
+              <Container id="filetop">{loading ? spinner : display2}</Container>
               {/* <MyFileChangePass /> */}
             </Tab>
             <Tab title={<></>} disabled></Tab>
@@ -350,9 +484,34 @@ function MemberMyFiles() {
             ></Tab>
           </Tabs>
         </Container>
+        <Modal
+          show={showModal}
+          onHide={handleClose}
+          {...props}
+          size="sm"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Modal.Header closeButton style={{ color: 'brown' }}>
+            <Modal.Title>哈囉！</Modal.Title>
+          </Modal.Header>
+          <Modal.Body style={{ textAlign: 'center', color: 'blue' }}>
+            {modalWord}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="dark"
+              onClick={() => {
+                handleClose()
+              }}
+            >
+              確認
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </Router>
     </>
   )
 }
 
-export default MemberMyFiles
+export default withRouter(MemberMyFiles)

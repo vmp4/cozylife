@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { BrowserRouter as Router, withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import {
-  Container,
   Button,
+  Container,
   Pagination,
   InputGroup,
   FormControl,
@@ -22,6 +22,7 @@ const MemberMyCollection = (props) => {
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
   const [showModal, setShowModal] = useState(false)
+  const [showModalConfirm, setShowModalConfirm] = useState(false)
   const [productPageTotal, setProductPageTotal] = useState(1)
 
   function getDataFromLocalStorage() {
@@ -46,7 +47,7 @@ const MemberMyCollection = (props) => {
     setProduct(value)
     setTimeout(() => {
       setLoading(false)
-      alert('已刪除')
+      handleShowConfirm()
     })
   }
 
@@ -71,9 +72,13 @@ const MemberMyCollection = (props) => {
     </>
   )
 
-  // Modal用設定
+  // 刪除完成Modal用設定
   const handleClose = () => setShowModal(false)
   const handleShow = () => setShowModal(true)
+
+  // 確認刪除Modal用設定
+  const handleCloseConfirm = () => setShowModalConfirm(false)
+  const handleShowConfirm = () => setShowModalConfirm(true)
 
   // Pagination設定
   const pageNow = +props.match.params.page
@@ -112,7 +117,7 @@ const MemberMyCollection = (props) => {
                 <Card
                   className="col-mb-auto"
                   style={{ width: '15rem' }}
-                  key={index}
+                  key={index.id}
                 >
                   <Card.Header>產品編號：{value.productID}</Card.Header>
                   <Card.Img variant="top" src={value.productImg} />
@@ -122,17 +127,31 @@ const MemberMyCollection = (props) => {
                       Some quick example text to build on the card title and
                       make up the bulk of the card's content.
                     </Card.Text>
-                    <Button
-                      variant="danger"
-                      onClick={() => {
-                        handleShow()
-                      }}
-                    >
-                      刪除此收藏
-                    </Button>
+                    <div className="row">
+                      <button
+                        style={{ marginLeft: '10px' }}
+                        id="colDet"
+                        className="btn btn-secondary col-md-5"
+                        key={index.id}
+                        onClick={() => {
+                          handleShow()
+                        }}
+                      >
+                        刪除收藏
+                      </button>
+                      <button
+                        id="goShop"
+                        style={{ marginLeft: '15px' }}
+                        className="btn btn-warning col-md-5"
+                        onClick={() => {}}
+                      >
+                        去購買
+                      </button>
+                    </div>
                   </Card.Body>
                 </Card>
                 <Modal
+                  key={index.id}
                   show={showModal}
                   onHide={handleClose}
                   {...props}
@@ -197,6 +216,31 @@ const MemberMyCollection = (props) => {
         />
       </Pagination>
       {/* <ProPagination productPageTotal={productPageTotal} /> */}
+      <Modal
+        show={showModalConfirm}
+        onHide={handleCloseConfirm}
+        {...props}
+        // size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton style={{ color: 'brown' }}>
+          <Modal.Title></Modal.Title>
+        </Modal.Header>
+        <Modal.Body style={{ textAlign: 'center', color: 'blue' }}>
+          刪除完成
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="primary"
+            onClick={() => {
+              handleCloseConfirm()
+            }}
+          >
+            確定
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   )
 
@@ -204,37 +248,35 @@ const MemberMyCollection = (props) => {
 
   return (
     <>
-      <Router>
-        <Container id="collectiontabs">
-          <Tabs
-            justify
-            id="controlled-tab-example"
-            activeKey={key}
-            onSelect={(k) => setKey(k)}
-          >
-            <Tab eventKey="mc" title="我的收藏">
-              {loading ? spinner : display}
-            </Tab>
-            {/* <Tab eventKey="ce" title="即將到期"></Tab>
+      <Container id="collectiontabs">
+        <Tabs
+          justify
+          id="controlled-tab-example"
+          activeKey={key}
+          onSelect={(k) => setKey(k)}
+        >
+          <Tab eventKey="mc" title="我的收藏">
+            {loading ? spinner : display}
+          </Tab>
+          {/* <Tab eventKey="ce" title="即將到期"></Tab>
           <Tab eventKey="au" title="已使用"></Tab> */}
-            {/* <Tab title={<></>} disabled></Tab> */}
-            <Tab
-              title={
-                <>
-                  <InputGroup>
-                    <FormControl
-                      name="searchText"
-                      placeholder="輸入產品名稱進行搜尋"
-                      value={searchText}
-                      onChange={(e) => setSearchText(e.target.value)}
-                    />
-                  </InputGroup>
-                </>
-              }
-            ></Tab>
-          </Tabs>
-        </Container>
-      </Router>
+          {/* <Tab title={<></>} disabled></Tab> */}
+          <Tab
+            title={
+              <>
+                <InputGroup>
+                  <FormControl
+                    name="searchText"
+                    placeholder="輸入產品名稱進行搜尋"
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
+                  />
+                </InputGroup>
+              </>
+            }
+          ></Tab>
+        </Tabs>
+      </Container>
     </>
   )
 }
