@@ -129,6 +129,14 @@ const MemberMyCollection = (props) => {
                     </Card.Text>
                     <div className="row">
                       <button
+                        id="goShop"
+                        style={{ marginLeft: '15px' }}
+                        className="btn btn-warning col-md-5"
+                        onClick={() => {}}
+                      >
+                        去購買
+                      </button>
+                      <button
                         style={{ marginLeft: '10px' }}
                         id="colDet"
                         className="btn btn-secondary col-md-5"
@@ -138,14 +146,6 @@ const MemberMyCollection = (props) => {
                         }}
                       >
                         刪除收藏
-                      </button>
-                      <button
-                        id="goShop"
-                        style={{ marginLeft: '15px' }}
-                        className="btn btn-warning col-md-5"
-                        onClick={() => {}}
-                      >
-                        去購買
                       </button>
                     </div>
                   </Card.Body>

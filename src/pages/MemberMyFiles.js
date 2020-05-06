@@ -70,7 +70,6 @@ function MemberMyFiles(props) {
       CustomerAdd,
       CustomerName,
       CustomerMail,
-      CustomerBirthday,
       CustomerUsername,
       CustomerPassword,
     }
