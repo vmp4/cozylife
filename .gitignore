@@ -29,3 +29,26 @@ src/backup/5-7/MyFile copy.js
 src/backup/5-7/OldMemberMyFiles.
 src/backup/5-7/testjson.txt
 src/backup/5-7/variables copy.scss
+src/backup/5-7/OldMemberMyDiscount
+src/backup/5-7/OldMemberMyCollection
+src/backup/5-7/OldMember
+src/components/CreditCard.js
+src/components/CartDelete.js
+src/components/CartCoupon.js
+src/components/CartCounter.js
+src/components/CartCheckbox.js
+src/components/Menu.js
+src/components/RBMenu.js
+src/components/UserInput.js
+src/img/Ader1.jpg
+src/img/Ader2.jpg
+src/img/Ader3.jpg
+src/img/pen1.jpg
+src/img/pen2.jpg
+src/img/pen3.jpg
+src/pages/Cart.js
+src/pages/CheckoutPage.js
+src/pages/OrderDetails.js
+src/pages/ProductDisplay.js
+src/pages/ProductList.js
+src/styles/cart.scss

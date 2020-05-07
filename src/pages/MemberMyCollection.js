@@ -132,7 +132,9 @@ const MemberMyCollection = (props) => {
                         id="goShop"
                         style={{ marginLeft: '15px' }}
                         className="btn btn-warning col-md-5"
-                        onClick={() => {}}
+                        onClick={() => {
+                          props.history.push('/Member')
+                        }}
                       >
                         去購買
                       </button>
@@ -142,7 +144,7 @@ const MemberMyCollection = (props) => {
                         className="btn btn-secondary col-md-5"
                         key={index.id}
                         onClick={() => {
-                          handleShow()
+                          handleShow(value.productID)
                         }}
                       >
                         刪除收藏

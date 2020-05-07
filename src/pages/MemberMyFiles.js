@@ -11,7 +11,7 @@ import $ from 'jquery'
 // import MyFileChangePass from './MyFileChangePass'
 
 function MemberMyFiles(props) {
-  const [key, setKey] = useState('cpw')
+  const [key, setKey] = useState('mdd')
   const [loading, setLoading] = useState(false)
   const [modalWord, setModalword] = useState('')
   const [showModal, setShowModal] = useState(false)
@@ -235,7 +235,7 @@ function MemberMyFiles(props) {
           <label className="col-md-2">生日</label>
           <div className="col-md-4">
             <input
-              type="text"
+              type="date"
               placeholder="請輸入生日日期"
               className="form-control-plaintext"
               value={CustomerBirthday}
@@ -319,7 +319,7 @@ function MemberMyFiles(props) {
 
   // 新密碼確認
   function checkSecondPass(value1, value2) {
-    if (value1 === '') {
+    if (value1 === '' && value2 === '') {
       setModalword('請輸入新密碼！')
       handleShow()
       $('#firstPass').focus()
@@ -332,7 +332,7 @@ function MemberMyFiles(props) {
         $('#firstPass').focus()
         return false
       }
-      if (value1.length <= 2) {
+      if (value1.length <= 8) {
         setModalword('密碼長度必須大於8個字母！')
         handleShow()
         $('#firstPass').focus()
@@ -374,8 +374,9 @@ function MemberMyFiles(props) {
   }
 
   function setCreateNewPwToCustomerPw() {
-    setCustomerPassword(createNewPassword)
-    console.log(CustomerPassword)
+    let CustomerPassword = createNewPassword
+    setCustomerPassword(CustomerPassword)
+    console.log(setCustomerPassword(CustomerPassword))
   }
 
   // 修改密碼頁面

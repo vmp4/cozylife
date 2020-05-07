@@ -27,7 +27,7 @@ function MemberMyDiscount(props) {
   function getDiscountFromLocalStorage() {
     setLoading(true)
 
-    const newDiscount = JSON.parse(localStorage.getItem('discount')) || []
+    const newDiscount = JSON.parse(localStorage.getItem('coupon')) || []
     setDiscount(newDiscount)
 
     // const discountPageTotal = Math.ceil(newDiscount.length / 6)
@@ -40,7 +40,7 @@ function MemberMyDiscount(props) {
   function setDeleteDiscountToLocalStorage(value) {
     setLoading(true)
 
-    localStorage.setItem('discount', JSON.stringify(value))
+    localStorage.setItem('coupon', JSON.stringify(value))
     setDiscount(value)
 
     setTimeout(() => {
@@ -70,18 +70,40 @@ function MemberMyDiscount(props) {
     </>
   )
 
+  // 把日期以YYYY-MM-DD hh:mm:ss顯示
+  /* function myFunction(date) {
+    let y = date.getFullYear()
+    let m = date.getMonth() + 1
+    m = m < 10 ? '0' + m : m
+    let d = date.getDate()
+    d = d < 10 ? '0' + d : d
+    let h = date.getHours()
+    h = h < 10 ? '0' + h : h
+    let minute = date.getMinutes()
+    minute = minute < 10 ? '0' + minute : minute
+    let second = date.getSeconds()
+    second = second < 10 ? '0' + second : second
+    return y + '-' + m + '-' + d + ' ' + h + ':' + minute + ':' + second
+  } */
+
+  // let dis = ddd(Date(discount[0].coupon_end_time))
+  // console.log(myFunction(new Date(discount[1].coupon_end_time)))
+
   // 過濾出目前可使用呈現的資料
   function dateFilter(discount) {
     return function (x) {
-      return new Date(x.discountEndDate) - new Date() > 0 || !discount
+      return new Date(x.coupon_end_time) - new Date() > 0 || !discount
     }
   }
 
   // 過濾出目前頁面要呈現的資料
   let discountFilter = discount.filter(dateFilter(discount))
-  // const displayDiscount = discountFilter.filter((item, index) => {
-  //   return index < pageNow * 6 && index >= (pageNow - 1) * 6
-  // })
+
+  for (let i = 0; i < discountFilter.length; i++) {
+    discountFilter[i].discountEndDate = discountFilter[i].discountEndDate.split(
+      'T'
+    )[0]
+  }
 
   // 我的優惠Modal用設定
   const handleClose = () => setShowModal(false)
@@ -100,19 +122,24 @@ function MemberMyDiscount(props) {
                   className="col-mb-auto"
                   style={{ width: '15rem' }}
                 >
-                  <Card.Header>>折扣編號：{value.discountID}</Card.Header>
-                  <Card.Img variant="top" src="holder.js/100px180" />
+                  <Card.Header>>折扣編號：{value.coupon_id}</Card.Header>
+                  <Card.Img variant="top" src={value.coupon_picture} />
                   <Card.Body>
-                    <Card.Title>{value.discountName}</Card.Title>
-                    <Card.Text>{value.discountEndDate}</Card.Text>
+                    <Card.Title>{value.coupon_name}</Card.Title>
+                    <Card.Text>
+                      {/* {value.coupon_end_time} */}
+                      {/* {formatDateTime(Date(value.coupon_end_time))} */}
+                    </Card.Text>
                     <div className="row">
                       <button
                         id="useDis"
                         style={{ margin: '5px 0 5px 10px' }}
                         className="btn btn-warning col-md-5"
-                        onClick={() => {}}
+                        onClick={() => {
+                          props.history.push('/Member')
+                        }}
                       >
-                        去購買
+                        去使用
                       </button>
                       <button
                         style={{ margin: '5px 0 5px 10px' }}
@@ -127,7 +154,13 @@ function MemberMyDiscount(props) {
                     </div>
                   </Card.Body>
                 </Card>
+              </>
+            )
+          })}
 
+          {discountFilter.map((value, index) => {
+            return (
+              <>
                 {/* 可使用Card的Modal */}
                 <Modal
                   key={index.id}
@@ -139,10 +172,10 @@ function MemberMyDiscount(props) {
                   centered
                 >
                   <Modal.Header closeButton>
-                    <Modal.Title>折扣編號：{value.discountID}</Modal.Title>
+                    <Modal.Title>折扣編號：{value.coupon_id}</Modal.Title>
                   </Modal.Header>
                   <Modal.Body>
-                    確定要刪除「{value.discountName}」折扣？
+                    確定要刪除「{value.coupon_name}」折扣？
                   </Modal.Body>
                   <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
@@ -172,8 +205,8 @@ function MemberMyDiscount(props) {
   function dateEndFilter(discount) {
     return function (x) {
       return (
-        (new Date(x.discountEndDate) - new Date() < 604800000 &&
-          new Date(x.discountEndDate) - new Date() > 0) ||
+        (new Date(x.coupon_end_time) - new Date() < 604800000 &&
+          new Date(x.coupon_end_time) - new Date() > 0) ||
         !discount
       )
     }
@@ -203,19 +236,21 @@ function MemberMyDiscount(props) {
                   className="col-mb-auto"
                   style={{ width: '15rem' }}
                 >
-                  <Card.Header>折扣編號：{value.discountID}</Card.Header>
-                  <Card.Img variant="top" src="holder.js/100px180" />
+                  <Card.Header>折扣編號：{value.coupon_id}</Card.Header>
+                  <Card.Img variant="top" src={value.coupon_picture} />
                   <Card.Body>
-                    <Card.Title>{value.discountName}</Card.Title>
-                    <Card.Text>{value.discountEndDate}</Card.Text>
+                    <Card.Title>{value.coupon_name}</Card.Title>
+                    <Card.Text>{value.coupon_end_time}</Card.Text>
                     <div className="row">
                       <button
                         id="useDis"
                         style={{ margin: '5px 0 5px 10px' }}
                         className="btn btn-warning col-md-5"
-                        onClick={() => {}}
+                        onClick={() => {
+                          props.history.push('/Member')
+                        }}
                       >
-                        去購買
+                        去使用
                       </button>
                       <button
                         style={{ margin: '5px 0 5px 10px' }}
@@ -242,10 +277,10 @@ function MemberMyDiscount(props) {
                   centered
                 >
                   <Modal.Header closeButton>
-                    <Modal.Title>折扣編號：{value.discountID}</Modal.Title>
+                    <Modal.Title>折扣編號：{value.coupon_id}</Modal.Title>
                   </Modal.Header>
                   <Modal.Body>
-                    確定要刪除「{value.discountName}」折扣？
+                    確定要刪除「{value.coupon_name}」折扣？
                   </Modal.Body>
                   <Modal.Footer>
                     <Button variant="secondary" onClick={handleCloseEnd}>
@@ -274,7 +309,7 @@ function MemberMyDiscount(props) {
   // 過濾出已到期要呈現的資料
   function dateExpireFilter(discount) {
     return function (x) {
-      return new Date(x.discountEndDate) - new Date() < 0 || !discount
+      return new Date(x.coupon_end_time) - new Date() < 0 || !discount
     }
   }
 
@@ -291,11 +326,11 @@ function MemberMyDiscount(props) {
     // console.log(dateExpireFilter(discount))
     // console.log(discountExpireFilter)
 
-    // console.log(new Date(discount.discountEndDate))
+    // console.log(new Date(discount.coupon_end_time))
     // console.log(new Date())
     let temp = 0
     for (let i = 0; i < discount.length; i++) {
-      if (new Date(discount[i].discountEndDate) - new Date() < 0 || !discount) {
+      if (new Date(discount[i].coupon_end_time) - new Date() < 0 || !discount) {
         temp++
       }
     }
@@ -305,7 +340,7 @@ function MemberMyDiscount(props) {
       let arr = 0
       for (let i = 0; i < discount.length; i++) {
         if (
-          new Date(discount[i].discountEndDate) - new Date() < 0 ||
+          new Date(discount[i].coupon_end_time) - new Date() < 0 ||
           !discount
         ) {
           arr = i
@@ -381,11 +416,11 @@ function MemberMyDiscount(props) {
                   className="col-mb-auto"
                   style={{ width: '15rem' }}
                 >
-                  <Card.Header>折扣編號：{value.discountID}</Card.Header>
-                  <Card.Img variant="top" src="holder.js/100px180" />
+                  <Card.Header>折扣編號：{value.coupon_id}</Card.Header>
+                  <Card.Img variant="top" src={value.coupon_picture} />
                   <Card.Body>
-                    <Card.Title>{value.discountName}</Card.Title>
-                    <Card.Text>{value.discountEndDate}</Card.Text>
+                    <Card.Title>{value.coupon_name}</Card.Title>
+                    <Card.Text>{value.coupon_end_time}</Card.Text>
                     <div className="row">
                       <button
                         style={{ margin: '5px 0 5px 10px' }}
@@ -412,10 +447,10 @@ function MemberMyDiscount(props) {
                   centered
                 >
                   <Modal.Header closeButton>
-                    <Modal.Title>折扣編號：{value.discountID}</Modal.Title>
+                    <Modal.Title>折扣編號：{value.coupon_id}</Modal.Title>
                   </Modal.Header>
                   <Modal.Body>
-                    確定要刪除「{value.discountName}」折扣？
+                    確定要刪除「{value.coupon_name}」折扣？
                   </Modal.Body>
                   <Modal.Footer>
                     <Button variant="secondary" onClick={handleCloseExpire}>
