@@ -21,6 +21,8 @@ const MemberMyCollection = (props) => {
   const [product, setProduct] = useState([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
+  const [productID, setProductID] = useState('')
+  const [productName, setProductName] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [showModalConfirm, setShowModalConfirm] = useState(false)
   const [productPageTotal, setProductPageTotal] = useState(1)
@@ -41,6 +43,7 @@ const MemberMyCollection = (props) => {
     // console.log(props)
   }
 
+  // 把刪除的商品陣列重新set進localStorage 讓上面讀取localStorage資料為更新後
   function setDeleteProductToLocalStorage(value) {
     setLoading(true)
     localStorage.setItem('product', JSON.stringify(value))
@@ -73,8 +76,17 @@ const MemberMyCollection = (props) => {
   )
 
   // 刪除完成Modal用設定
-  const handleClose = () => setShowModal(false)
-  const handleShow = () => setShowModal(true)
+  const handleDeleteClose = () => setShowModal(false)
+  const handleDeleteShow = (id) => {
+    const item = product.find((item) => item.productID === id)
+    setProductID(item.productID)
+    setProductName(item.productName)
+    setShowModal(true)
+  }
+  const productDelete = (id) => {
+    const newData = product.filter((item) => item.productID !== id)
+    setDeleteProductToLocalStorage(newData)
+  }
 
   // 確認刪除Modal用設定
   const handleCloseConfirm = () => setShowModalConfirm(false)
@@ -111,18 +123,18 @@ const MemberMyCollection = (props) => {
       /> */}
       <Container style={{ margin: '30px' }}>
         <div className="row">
-          {displayProduct.map((value, index) => {
+          {displayProduct.map((item) => {
             return (
               <>
                 <Card
                   className="col-mb-auto"
                   style={{ width: '15rem' }}
-                  key={index.id}
+                  key={item.id}
                 >
-                  <Card.Header>產品編號：{value.productID}</Card.Header>
-                  <Card.Img variant="top" src={value.productImg} />
+                  <Card.Header>產品編號：{item.productID}</Card.Header>
+                  <Card.Img variant="top" src={item.Picturepath} />
                   <Card.Body>
-                    <Card.Title>{value.productName}</Card.Title>
+                    <Card.Title>{item.productName}</Card.Title>
                     <Card.Text>
                       Some quick example text to build on the card title and
                       make up the bulk of the card's content.
@@ -142,9 +154,9 @@ const MemberMyCollection = (props) => {
                         style={{ marginLeft: '10px' }}
                         id="colDet"
                         className="btn btn-secondary col-md-5"
-                        key={index.id}
+                        // key={item.id}
                         onClick={() => {
-                          handleShow(value.productID)
+                          handleDeleteShow(item.productID)
                         }}
                       >
                         刪除收藏
@@ -153,30 +165,27 @@ const MemberMyCollection = (props) => {
                   </Card.Body>
                 </Card>
                 <Modal
-                  key={index.id}
+                  key={item.id}
                   show={showModal}
-                  onHide={handleClose}
+                  onHide={handleDeleteClose}
                   {...props}
                   // size="lg"
                   aria-labelledby="contained-modal-title-vcenter"
                   centered
                 >
                   <Modal.Header closeButton>
-                    <Modal.Title>產品編號：{value.productID}</Modal.Title>
+                    <Modal.Title>產品編號：{productID}</Modal.Title>
                   </Modal.Header>
-                  <Modal.Body>
-                    確定要刪除「{value.productName}」收藏？
-                  </Modal.Body>
+                  <Modal.Body>確定要刪除「{productName}」收藏？</Modal.Body>
                   <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
+                    <Button variant="secondary" onClick={handleDeleteClose}>
                       取消刪除
                     </Button>
                     <Button
                       variant="primary"
                       onClick={() => {
-                        handleClose()
-                        product.splice(value, 1)
-                        setDeleteProductToLocalStorage(product)
+                        handleDeleteClose()
+                        productDelete(item.productID)
                       }}
                     >
                       確認刪除

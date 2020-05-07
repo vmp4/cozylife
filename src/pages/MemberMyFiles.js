@@ -382,6 +382,7 @@ function MemberMyFiles(props) {
   // 修改密碼頁面
   const display2 = (
     <>
+      {/* <form onSubmit={onSubmit}> */}
       <div className="form-group">
         <label className="col-sm-4" style={{ marginLeft: '10px' }}>
           請輸入原本密碼：
@@ -451,6 +452,7 @@ function MemberMyFiles(props) {
       >
         確認修改
       </button>
+      {/* </form> */}
     </>
   )
 
