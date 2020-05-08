@@ -22,6 +22,7 @@ const MemberMyCollection = (props) => {
   const [product, setProduct] = useState([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
+  const [productID, setProductID] = useState('')
   const [picturepath, setPicturepath] = useState('')
   const [productName, setProductName] = useState('')
   const [showModal, setShowModal] = useState(false)
@@ -80,14 +81,15 @@ const MemberMyCollection = (props) => {
   const handleDeleteClose = () => setShowModal(false)
   const handleDeleteShow = (id) => {
     const item = product.find((item) => item.productID === id)
+    setProductID(item.productID)
     setPicturepath(item.Picturepath)
     setProductName(item.productName)
     setShowModal(true)
   }
-  const productDelete = (id) => {
-    const newData = product.filter((item) => item.productID !== id)
-    console.log(newData)
-    // setDeleteProductToLocalStorage(newData)
+  function productDelete(id) {
+    const newData = product.filter((product) => product.productID !== id)
+    // console.log(newData)
+    setDeleteProductToLocalStorage(newData)
   }
 
   // 確認刪除Modal用設定
@@ -100,7 +102,7 @@ const MemberMyCollection = (props) => {
   const pageNext =
     pageNow + 1 < productPageTotal ? pageNow + 1 : productPageTotal
 
-  //過濾頁面的函式
+  //過濾商品函式
   function searchFor(searchText) {
     return function (x) {
       return (
@@ -110,7 +112,7 @@ const MemberMyCollection = (props) => {
     }
   }
 
-  // 過濾出要目前頁面要呈現的資料
+  // 過濾出要目前頁面要呈現的商品資料
   let dataFilter = product.filter(searchFor(searchText))
   // console.log(dataFilter)
   const displayProduct = dataFilter.filter((item, index) => {
@@ -144,7 +146,7 @@ const MemberMyCollection = (props) => {
                     <div className="row">
                       <button
                         id="goShop"
-                        style={{ marginLeft: '15px' }}
+                        style={{ margin: '5px 9px 10px 9px' }}
                         className="btn btn-warning col-md-5"
                         onClick={() => {
                           props.history.push('/Member')
@@ -153,7 +155,7 @@ const MemberMyCollection = (props) => {
                         去購買
                       </button>
                       <button
-                        style={{ marginLeft: '10px' }}
+                        style={{ margin: '5px 9px 10px 9px' }}
                         id="colDet"
                         className="btn btn-secondary col-md-5"
                         // key={item.id}
@@ -166,39 +168,44 @@ const MemberMyCollection = (props) => {
                     </div>
                   </Card.Body>
                 </Card>
-                <Modal
-                  key={item.id}
-                  show={showModal}
-                  onHide={handleDeleteClose}
-                  {...props}
-                  // size="lg"
-                  aria-labelledby="contained-modal-title-vcenter"
-                  centered
-                >
-                  <Modal.Header closeButton>
-                    <Modal.Title>確定要刪除「{productName}」收藏？</Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>
-                    <Image src={picturepath} style={{ maxWidth: '368px' }} />
-                  </Modal.Body>
-                  <Modal.Footer>
-                    <Button variant="secondary" onClick={handleDeleteClose}>
-                      取消刪除
-                    </Button>
-                    <Button
-                      variant="primary"
-                      onClick={() => {
-                        handleDeleteClose()
-                        productDelete(item.productID)
-                      }}
-                    >
-                      確認刪除
-                    </Button>
-                  </Modal.Footer>
-                </Modal>
               </>
             )
           })}
+          <Modal
+            // key={item.id}
+            show={showModal}
+            onHide={handleDeleteClose}
+            {...props}
+            // size="lg"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>確定要刪除「{productName}」收藏？</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Image
+                src={picturepath}
+                style={{
+                  maxWidth: '100%',
+                }}
+              />
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleDeleteClose}>
+                取消刪除
+              </Button>
+              <Button
+                variant="primary"
+                onClick={() => {
+                  handleDeleteClose()
+                  productDelete(productID)
+                }}
+              >
+                確認刪除
+              </Button>
+            </Modal.Footer>
+          </Modal>
         </div>
       </Container>
       <Pagination className="justify-content-center">
