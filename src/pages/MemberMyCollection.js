@@ -11,6 +11,7 @@ import Tab from 'react-bootstrap/Tab'
 import Tabs from 'react-bootstrap/Tabs'
 import Card from 'react-bootstrap/Card'
 import Modal from 'react-bootstrap/Modal'
+import Image from 'react-bootstrap/Image'
 import Spinner from 'react-bootstrap/Spinner'
 // import CollectionPage from './CollectionPage'
 // import ProPagination from './ProPagination'
@@ -21,7 +22,7 @@ const MemberMyCollection = (props) => {
   const [product, setProduct] = useState([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
-  const [productID, setProductID] = useState('')
+  const [picturepath, setPicturepath] = useState('')
   const [productName, setProductName] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [showModalConfirm, setShowModalConfirm] = useState(false)
@@ -79,13 +80,14 @@ const MemberMyCollection = (props) => {
   const handleDeleteClose = () => setShowModal(false)
   const handleDeleteShow = (id) => {
     const item = product.find((item) => item.productID === id)
-    setProductID(item.productID)
+    setPicturepath(item.Picturepath)
     setProductName(item.productName)
     setShowModal(true)
   }
   const productDelete = (id) => {
     const newData = product.filter((item) => item.productID !== id)
-    setDeleteProductToLocalStorage(newData)
+    console.log(newData)
+    // setDeleteProductToLocalStorage(newData)
   }
 
   // 確認刪除Modal用設定
@@ -174,9 +176,11 @@ const MemberMyCollection = (props) => {
                   centered
                 >
                   <Modal.Header closeButton>
-                    <Modal.Title>產品編號：{productID}</Modal.Title>
+                    <Modal.Title>確定要刪除「{productName}」收藏？</Modal.Title>
                   </Modal.Header>
-                  <Modal.Body>確定要刪除「{productName}」收藏？</Modal.Body>
+                  <Modal.Body>
+                    <Image src={picturepath} style={{ maxWidth: '368px' }} />
+                  </Modal.Body>
                   <Modal.Footer>
                     <Button variant="secondary" onClick={handleDeleteClose}>
                       取消刪除
