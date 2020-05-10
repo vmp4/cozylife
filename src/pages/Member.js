@@ -11,14 +11,17 @@ import MemberMyFiles from './MemberMyFiles'
 import MemberMyCollection from './MemberMyCollection'
 import MemberMyDiscount from './MemberMyDiscount'
 import MemberInquire from './MemberInquire'
-import NotFoundPage from './NotFoundPage'
+// import NotFoundPage from './NotFoundPage'
 import '../styles/custom.scss'
 import { Container, Row, Col } from 'react-bootstrap'
 
-function Member() {
+function Member(props) {
   // const url = props.match.url
+  // const userid = props.match.params.userid
+  const userid = 1
   // const path = props.match.path
-  // console.log(props)
+  // console.log(url)
+  // console.log(userid)
   // const [prop1, setProp1] = useState(props)
 
   return (
@@ -36,7 +39,7 @@ function Member() {
                 <br />
                 <li id="list1">
                   <h5>
-                    <Link to={`/Member/MemberMyFiles`}>個人資料</Link>
+                    <Link to={`/Member/MemberMyFiles/` + userid}>個人資料</Link>
                   </h5>
                 </li>
                 <li id="list1">
@@ -60,8 +63,8 @@ function Member() {
             </Col>
             <Col md="10">
               <Switch>
-                <Route path={`/Member/MemberMyFiles`}>
-                  <MemberMyFiles />
+                <Route path={`/Member/MemberMyFiles/` + userid}>
+                  <MemberMyFiles userid={userid} />
                 </Route>
                 <Route path={`/Member/MemberMyDiscount/page/:page`}>
                   <MemberMyDiscount />
@@ -73,9 +76,9 @@ function Member() {
                   <MemberInquire />
                 </Route>
 
-                <Route path="/Member/*">
+                {/* <Route path="/Member/*">
                   <NotFoundPage />
-                </Route>
+                </Route> */}
                 {/* <Route path="/Member/MemberMyFiles/*">
                   <NotFoundPage />
                 </Route>
