@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import { BrowserRouter as Router, withRouter } from 'react-router-dom'
-import { Container, Button } from 'react-bootstrap'
+import { Container } from 'react-bootstrap'
 import Tab from 'react-bootstrap/Tab'
 import Tabs from 'react-bootstrap/Tabs'
 // import Card from 'react-bootstrap/Card'
 import Table from 'react-bootstrap/Table'
 // import Modal from 'react-bootstrap/Modal'
 import Spinner from 'react-bootstrap/Spinner'
-import Accordion from 'react-bootstrap/Accordion'
 import { FaAngleLeft } from 'react-icons/fa'
-import $ from 'jquery'
+// import $ from 'jquery'
 
 function MemberInquire(props) {
   const [key, setKey] = useState('odd')
   const [loading, setLoading] = useState(false)
+  const [userName, setUserName] = useState([])
   const [showDetail, setShowDetail] = useState(false)
   const [orderDetail, setOrderDetail] = useState([])
   const [orderID, setOrderID] = useState('')
@@ -48,6 +48,10 @@ function MemberInquire(props) {
     const orderDetail = JSON.parse(localStorage.getItem('orderDetail')) || []
     setOrderDetail(orderDetail)
 
+    const userName = JSON.parse(localStorage.getItem('user')) || []
+    // console.log(userName)
+    setUserName(userName[0].CustomerName)
+
     // setDetail(data)
     setOrderID(orderDetail.orderID)
     setOrderDate(orderDetail.orderDate)
@@ -57,6 +61,7 @@ function MemberInquire(props) {
     setShippedDate(orderDetail.shippedDate)
     setUnitTotalPrice(orderDetail.unitTotalPrice)
     setDiscouTotalPrice(orderDetail.discouTotalPrice)
+    // console.log(discouTotalPrice)
   }
 
   useEffect(() => {
@@ -69,9 +74,9 @@ function MemberInquire(props) {
     }, 500)
   }, [])
 
-  useEffect(() => {
-    $()
-  }, [showDetail])
+  // useEffect(() => {
+  //   $()
+  // }, [showDetail])
 
   const spinner = (
     <>
@@ -90,131 +95,120 @@ function MemberInquire(props) {
     orderDetail[i].shippedDate = orderDetail[i].shippedDate.split('T')[0]
   }
 
-  // // 刪除完成Modal用設定
-  // const handleClose = () => setShowModal(false)
-  // const handleShow = () => setShowModal(true)
-
-  const display = (
-    <>
-      {/* <Accordion defaultActiveKey="0">
-        <Card>
-          <Accordion.Toggle as={Card.Header} eventKey="0">
-            <tr>
-              <th>訂單編號</th>
-              <th>購買日期</th>
-              <th>訂單狀態</th>
-              <th>訂單金額</th>
-              <th>付款狀態</th>
-              <th>訂單明細</th>
-            </tr>
-          </Accordion.Toggle>
-          <Accordion.Collapse eventKey="0">
-            <Card.Body>Hello! I'm the body</Card.Body>
-          </Accordion.Collapse>
-        </Card>
-        <Card>
-          <Accordion.Toggle as={Card.Header} eventKey="1">
-            Click me!
-          </Accordion.Toggle>
-          <Accordion.Collapse eventKey="1">
-            <Card.Body>Hello! I'm another body</Card.Body>
-          </Accordion.Collapse>
-        </Card>
-      </Accordion> */}
-
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>訂單編號</th>
-            <th>購買日期</th>
-            <th>訂單狀態</th>
-            <th>訂單金額</th>
-            <th>付款狀態</th>
-            <th>訂單明細</th>
-          </tr>
-        </thead>
-        {orderDetail.map((index) => {
-          return (
-            <>
+  const orderList = (
+    <Table striped bordered hover>
+      <thead>
+        <tr>
+          <th>訂單編號</th>
+          <th>購買日期</th>
+          <th>訂單狀態</th>
+          <th>訂單金額</th>
+          <th>付款狀態</th>
+          <th>訂單明細</th>
+        </tr>
+      </thead>
+      {orderDetail.map((index) => {
+        return (
+          <>
+            <tbody key={index.id}>
+              <tr>
+                <td>{index.orderID}</td>
+                <td>{index.orderDate}</td>
+                <td>
+                  {new Date(index.shippedDate) < new Date()
+                    ? '已送達'
+                    : '寄送中'}
+                </td>
+                <td>{index.unitTotalPrice}</td>
+                <td>已付款</td>
+                <td>
+                  <p
+                    onClick={() => {
+                      // console.log(e)
+                      // if (e.currentTarge) {
+                      setShowDetail(true)
+                      // }
+                    }}
+                  >
+                    點此查看明細
+                  </p>
+                </td>
+              </tr>
+            </tbody>
+            {showDetail ? (
               <tbody key={index}>
                 <tr>
-                  <td>{index.orderID}</td>
-                  <td>{index.orderDate}</td>
-                  <td>已送達</td>
-                  <td>{index.unitTotalPrice}</td>
-                  <td>已付款</td>
-                  <td>
+                  <td colSpan="3" style={{ backgroundColor: 'white' }}>
+                    訂單編號：{index.orderID}
+                  </td>
+                  <td colSpan="3" style={{ backgroundColor: 'white' }}>
+                    顧客姓名：{userName}
+                  </td>
+                </tr>
+                <tr>
+                  <td colSpan="3" style={{ backgroundColor: 'white' }}>
+                    訂單日期：{index.orderDate}
+                  </td>
+                  <td colSpan="3" style={{ backgroundColor: 'white' }}>
+                    出貨日期：{index.requireDate}
+                  </td>
+                </tr>
+                <tr>
+                  <td colSpan="3" style={{ backgroundColor: 'white' }}>
+                    寄送日期：{index.shippedDate}
+                  </td>
+                  <td colSpan="3" style={{ backgroundColor: 'white' }}>
+                    連絡電話：{index.shippedTel}
+                  </td>
+                </tr>
+                <tr>
+                  <td colSpan="3" style={{ backgroundColor: 'white' }}>
+                    購物金額：{index.unitTotalPrice}
+                  </td>
+                  <td colSpan="3" style={{ backgroundColor: 'white' }}>
+                    使用折扣：
+                    {index.discouTotalPrice
+                      ? index.discouTotalPrice
+                      : '沒有使用折扣'}
+                  </td>
+                </tr>
+                <tr>
+                  <td colSpan="5" style={{ backgroundColor: 'white' }}>
+                    寄送地址：{index.shippedAdd}
+                  </td>
+                  <td colSpan="1" style={{ backgroundColor: 'white' }}>
                     <p
                       onClick={() => {
-                        setShowDetail(true)
+                        setShowDetail(false)
                       }}
                     >
-                      點此查看明細
+                      點擊關閉
                     </p>
                   </td>
                 </tr>
               </tbody>
-              {showDetail ? (
-                <tbody key={index}>
-                  <tr>
-                    <td colSpan="3" style={{ backgroundColor: 'white' }}>
-                      訂單編號：{index.orderID}
-                    </td>
-                    <td colSpan="3" style={{ backgroundColor: 'white' }}>
-                      顧客姓名：{index.discountTotalPrice}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colSpan="3" style={{ backgroundColor: 'white' }}>
-                      訂單日期：{index.orderDate}
-                    </td>
-                    <td colSpan="3" style={{ backgroundColor: 'white' }}>
-                      收貨日期：{index.requireDate}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colSpan="3" style={{ backgroundColor: 'white' }}>
-                      寄送日期：{index.shippedDate}
-                    </td>
-                    <td colSpan="3" style={{ backgroundColor: 'white' }}>
-                      連絡電話：{index.shippedTel}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colSpan="3" style={{ backgroundColor: 'white' }}>
-                      購物金額：{index.unitTotalPrice}
-                    </td>
-                    <td colSpan="3" style={{ backgroundColor: 'white' }}>
-                      使用折扣：
-                      {
-                        (index.discountTotalPrice = null
-                          ? '無'
-                          : index.discountTotalPrice)
-                      }
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colSpan="5" style={{ backgroundColor: 'white' }}>
-                      寄送地址：{index.shippedAdd}
-                    </td>
-                    <td colSpan="1" style={{ backgroundColor: 'white' }}>
-                      <p
-                        onClick={() => {
-                          setShowDetail(false)
-                        }}
-                      >
-                        點擊關閉
-                      </p>
-                    </td>
-                  </tr>
-                </tbody>
-              ) : (
-                ''
-              )}
-            </>
-          )
-        })}
-      </Table>
+            ) : (
+              ''
+            )}
+          </>
+        )
+      })}
+    </Table>
+  )
+
+  const display = (
+    <>
+      {orderDetail.length === 0 ? (
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <td style={{ backgroundColor: 'white' }}>目前沒有訂單紀錄</td>
+            </tr>
+          </thead>
+        </Table>
+      ) : (
+        orderList
+      )}
     </>
   )
 
@@ -231,165 +225,22 @@ function MemberInquire(props) {
             <Container id="requiretop">{loading ? spinner : display}</Container>
             {/* <MyFile /> */}
           </Tab>
-          <Tab eventKey="cqa" title="問答">
-            {/* <Container id="requiretop">{loading ? spinner : display2}</Container> */}
-            {/* <MyFileChangePass /> */}
+          {/* <Tab eventKey="cqa" title="問答">
+            <Container id="requiretop">{loading ? spinner : display2}</Container>
+            <MyFileChangePass />
           </Tab>
-          <Tab eventKey="ri" title={<>退貨查詢</>} disabled></Tab>
+          <Tab eventKey="ri" title={<>退貨查詢</>} disabled></Tab> */}
           <Tab
             title={
               <>
                 <FaAngleLeft />
-                {'訂單相關'}
+                {'訂單列表'}
               </>
             }
             disabled
           ></Tab>
         </Tabs>
       </Container>
-      {/* <Modal
-                  show={showModal}
-                  onHide={handleClose}
-                  // {...props}
-                  size="lg"
-                  aria-labelledby="contained-modal-title-vcenter"
-                  centered
-                >
-                  <Modal.Header closeButton style={{ color: 'brown' }}>
-                    <Modal.Title>訂單詳細資訊</Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>
-                    訂單編號：
-                    <div className="col-md-6">
-                      <input
-                        required
-                        type="text"
-                        value={index.orderID}
-                        className="form-control-plaintext"
-                        readOnly
-                        disabled
-                      />
-                    </div>
-                  </Modal.Body>
-                  <Modal.Body>
-                    顧客姓名：
-                    <div className="col-md-6">
-                      <input
-                        required
-                        type="text"
-                        value={index.discountTotalPrice}
-                        className="form-control-plaintext"
-                        readOnly
-                        disabled
-                      />
-                    </div>
-                  </Modal.Body>
-                  <Modal.Body>
-                    訂單日期：
-                    <div className="col-md-6">
-                      <input
-                        required
-                        type="text"
-                        value={index.orderDate}
-                        className="form-control-plaintext"
-                        readOnly
-                        disabled
-                      />
-                    </div>
-                  </Modal.Body>
-                  <Modal.Body>
-                    收貨日期：
-                    <div className="col-md-6">
-                      <input
-                        required
-                        type="text"
-                        value={index.requireDate}
-                        className="form-control-plaintext"
-                        readOnly
-                        disabled
-                      />
-                    </div>
-                  </Modal.Body>
-                  <Modal.Body>
-                    寄送日期：
-                    <div className="col-md-6">
-                      <input
-                        required
-                        type="text"
-                        value={index.shippedDate}
-                        className="form-control-plaintext"
-                        readOnly
-                        disabled
-                      />
-                    </div>
-                  </Modal.Body>
-                  <Modal.Body>
-                    連絡電話：
-                    <div className="col-md-6">
-                      <input
-                        required
-                        type="text"
-                        value={index.shippedTel}
-                        className="form-control-plaintext"
-                        readOnly
-                        disabled
-                      />
-                    </div>
-                  </Modal.Body>
-                  <Modal.Body>
-                    寄送地址：
-                    <div className="col-md-6">
-                      <input
-                        required
-                        type="text"
-                        value={index.shippedAdd}
-                        className="form-control-plaintext"
-                        readOnly
-                        disabled
-                      />
-                    </div>
-                  </Modal.Body>
-                  <Modal.Body>
-                    購物金額：
-                    <div className="col-md-6">
-                      <input
-                        required
-                        type="text"
-                        value={index.unitTotalPrice}
-                        className="form-control-plaintext"
-                        readOnly
-                        disabled
-                      />
-                    </div>
-                  </Modal.Body>
-                  <Modal.Body>
-                    使用折扣：
-                    <div className="col-md-6">
-                      <input
-                        required
-                        type="text"
-                        value={
-                          (index.discountTotalPrice = null
-                            ? '無'
-                            : index.discountTotalPrice)
-                        }
-                        className="form-control-plaintext"
-                        readOnly
-                        disabled
-                      />
-                    </div>
-                  </Modal.Body>
-                  <Modal.Footer>
-                    <Button
-                      variant="primary"
-                      onClick={() => {
-                        handleClose()
-                      }}
-                    >
-                      確定
-                    </Button>
-                  </Modal.Footer>
-                </Modal> */}
     </>
   )
 }

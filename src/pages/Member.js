@@ -16,13 +16,13 @@ import '../styles/custom.scss'
 import { Container, Row, Col } from 'react-bootstrap'
 
 function Member(props) {
-  // const url = props.match.url
   // const userid = props.match.params.userid
   const userid = 1
+
+  // const url = props.match.url
   // const path = props.match.path
   // console.log(url)
   // console.log(userid)
-  // const [prop1, setProp1] = useState(props)
 
   return (
     <>
@@ -56,7 +56,7 @@ function Member(props) {
                 </li>
                 <li id="list1">
                   <h5>
-                    <Link to={`/Member/MemberInquire`}>訂單/問答/退貨查詢</Link>
+                    <Link to={`/Member/MemberInquire`}>訂單查詢</Link>
                   </h5>
                 </li>
               </ul>
