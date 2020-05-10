@@ -8,7 +8,7 @@ import Table from 'react-bootstrap/Table'
 // import Modal from 'react-bootstrap/Modal'
 import Spinner from 'react-bootstrap/Spinner'
 import { FaAngleLeft } from 'react-icons/fa'
-// import $ from 'jquery'
+import $ from 'jquery'
 
 function MemberInquire(props) {
   const [key, setKey] = useState('odd')
@@ -119,13 +119,16 @@ function MemberInquire(props) {
                 <td>已付款</td>
                 <td>
                   <p
+                    key={index.id}
                     onClick={(e) => {
-                      // console.log(e)
-                      {
-                        e.target.click
-                          ? setShowDetail(true)
-                          : setShowDetail(false)
-                      }
+                      // console.log(e.currentTarget.getAttribute('key'))
+                      // console.log($(e.currentTarget).attr('key'))
+                      // console.log($('#dodo').val())
+                      // {
+                      //   e.target.click    ?
+                      setShowDetail(true)
+                      //     : setShowDetail(false)
+                      // }
                     }}
                   >
                     點此查看明細
