@@ -61,7 +61,6 @@ function MemberInquire(props) {
     setShippedDate(orderDetail.shippedDate)
     setUnitTotalPrice(orderDetail.unitTotalPrice)
     setDiscouTotalPrice(orderDetail.discouTotalPrice)
-    // console.log(discouTotalPrice)
   }
 
   useEffect(() => {
@@ -73,10 +72,6 @@ function MemberInquire(props) {
       setLoading(false)
     }, 500)
   }, [])
-
-  // useEffect(() => {
-  //   $()
-  // }, [showDetail])
 
   const spinner = (
     <>
@@ -95,6 +90,7 @@ function MemberInquire(props) {
     orderDetail[i].shippedDate = orderDetail[i].shippedDate.split('T')[0]
   }
 
+  // 訂單狀態
   const orderList = (
     <Table striped bordered hover>
       <thead>
@@ -123,11 +119,13 @@ function MemberInquire(props) {
                 <td>已付款</td>
                 <td>
                   <p
-                    onClick={() => {
+                    onClick={(e) => {
                       // console.log(e)
-                      // if (e.currentTarge) {
-                      setShowDetail(true)
-                      // }
+                      {
+                        e.target.click
+                          ? setShowDetail(true)
+                          : setShowDetail(false)
+                      }
                     }}
                   >
                     點此查看明細
@@ -136,7 +134,7 @@ function MemberInquire(props) {
               </tr>
             </tbody>
             {showDetail ? (
-              <tbody key={index}>
+              <tbody key={index.id}>
                 <tr>
                   <td colSpan="3" style={{ backgroundColor: 'white' }}>
                     訂單編號：{index.orderID}
@@ -196,6 +194,7 @@ function MemberInquire(props) {
     </Table>
   )
 
+  // 有訂單就顯示訂單狀態 沒有就顯示沒有訂單紀錄
   const display = (
     <>
       {orderDetail.length === 0 ? (
