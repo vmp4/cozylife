@@ -90,6 +90,12 @@ function MemberInquire(props) {
     orderDetail[i].shippedDate = orderDetail[i].shippedDate.split('T')[0]
   }
 
+  function handleClick(event) {
+    // console.log(event.target)
+    console.log(event.target.getAttribute('data-index'))
+    // console.log(this.refs.myInput.getAttribute('data-dd'))
+  }
+
   // 訂單狀態
   const orderList = (
     <Table striped bordered hover>
@@ -103,32 +109,38 @@ function MemberInquire(props) {
           <th>訂單明細</th>
         </tr>
       </thead>
-      {orderDetail.map((index) => {
+      {orderDetail.map((item) => {
         return (
           <>
-            <tbody key={index.id}>
+            <tbody key={item.id}>
               <tr>
-                <td>{index.orderID}</td>
-                <td>{index.orderDate}</td>
+                <td>{item.orderID}</td>
+                <td>{item.orderDate}</td>
                 <td>
-                  {new Date(index.shippedDate) < new Date()
+                  {new Date(item.shippedDate) < new Date()
                     ? '已送達'
                     : '寄送中'}
                 </td>
-                <td>{index.unitTotalPrice}</td>
+                <td>{item.unitTotalPrice}</td>
                 <td>已付款</td>
                 <td>
                   <p
-                    key={index.id}
-                    onClick={(e) => {
-                      // console.log(e.currentTarget.getAttribute('key'))
+                    // data-index="{index}"
+                    data-index={item.orderID}
+                    key={item.id}
+                    onClick={(event) => {
+                      // handleClick(event)
+                      console.log(item.orderID)
+                      if (
+                        event.target.getAttribute('data-index') == item.orderID
+                      ) {
+                        setShowDetail(true)
+
+                        console.log('11')
+                      }
+                      // if (event.target.) setShowDetail(true)
                       // console.log($(e.currentTarget).attr('key'))
-                      // console.log($('#dodo').val())
-                      // {
-                      //   e.target.click    ?
-                      setShowDetail(true)
-                      //     : setShowDetail(false)
-                      // }
+                      console.log(event.target.getAttribute('data-index'))
                     }}
                   >
                     點此查看明細
@@ -137,45 +149,45 @@ function MemberInquire(props) {
               </tr>
             </tbody>
             {showDetail ? (
-              <tbody key={index.id}>
-                <tr>
+              <tbody key={item.id}>
+                <tr key={item.id}>
                   <td colSpan="3" style={{ backgroundColor: 'white' }}>
-                    訂單編號：{index.orderID}
+                    訂單編號：{item.orderID}
                   </td>
                   <td colSpan="3" style={{ backgroundColor: 'white' }}>
                     顧客姓名：{userName}
                   </td>
                 </tr>
-                <tr>
+                <tr key={item.id}>
                   <td colSpan="3" style={{ backgroundColor: 'white' }}>
-                    訂單日期：{index.orderDate}
+                    訂單日期：{item.orderDate}
                   </td>
                   <td colSpan="3" style={{ backgroundColor: 'white' }}>
-                    出貨日期：{index.requireDate}
-                  </td>
-                </tr>
-                <tr>
-                  <td colSpan="3" style={{ backgroundColor: 'white' }}>
-                    寄送日期：{index.shippedDate}
-                  </td>
-                  <td colSpan="3" style={{ backgroundColor: 'white' }}>
-                    連絡電話：{index.shippedTel}
+                    出貨日期：{item.requireDate}
                   </td>
                 </tr>
-                <tr>
+                <tr key={item.id}>
                   <td colSpan="3" style={{ backgroundColor: 'white' }}>
-                    購物金額：{index.unitTotalPrice}
+                    寄送日期：{item.shippedDate}
+                  </td>
+                  <td colSpan="3" style={{ backgroundColor: 'white' }}>
+                    連絡電話：{item.shippedTel}
+                  </td>
+                </tr>
+                <tr key={item.id}>
+                  <td colSpan="3" style={{ backgroundColor: 'white' }}>
+                    購物金額：{item.unitTotalPrice}
                   </td>
                   <td colSpan="3" style={{ backgroundColor: 'white' }}>
                     使用折扣：
-                    {index.discouTotalPrice
-                      ? index.discouTotalPrice
+                    {item.discouTotalPrice
+                      ? item.discouTotalPrice
                       : '沒有使用折扣'}
                   </td>
                 </tr>
-                <tr>
+                <tr key={item.id}>
                   <td colSpan="5" style={{ backgroundColor: 'white' }}>
-                    寄送地址：{index.shippedAdd}
+                    寄送地址：{item.shippedAdd}
                   </td>
                   <td colSpan="1" style={{ backgroundColor: 'white' }}>
                     <p
